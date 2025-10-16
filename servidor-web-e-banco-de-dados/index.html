@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD App Interface</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.3s ease;
+      }
+
+      .tab.active {
+        background: white;
+        color: #4facfe;
+        border-bottom: 3px solid #4facfe;
+      }
+
+      .tab:hover {
+        background: #e9ecef;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h3 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #4facfe;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .form-group input,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #4facfe;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        color: white;
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      tr:hover {
+        background: #f8f9fa;
+      }
+
+      .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .status-online {
+        background: #28a745;
+      }
+
+      .status-offline {
+        background: #dc3545;
+      }
+
+      .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-weight: 500;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #6c757d;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 20px;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      @media (max-width: 768px) {
+        .form-row {
+          flex-direction: column;
+        }
+
+        .tabs {
+          flex-direction: column;
+        }
+
+        .tab {
+          border-bottom: 1px solid #dee2e6;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .content {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🚀 CRUD App Interface</h1>
+        <p>Manage Users and Products with ease</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('users')">
+          👥 Users
+        </button>
+        <button class="tab" onclick="switchTab('products')">📦 Products</button>
+      </div>
+
+      <div class="content">
+        <!-- Users Tab -->
+        <div id="users" class="tab-content active">
+          <div class="section">
+            <h3>Add New User</h3>
+            <form id="userForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="userName">Name *</label>
+                  <input type="text" id="userName" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="userEmail">Email *</label>
+                  <input type="email" id="userEmail" name="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="userAge">Age *</label>
+                  <input
+                    type="number"
+                    id="userAge"
+                    name="age"
+                    min="1"
+                    max="120"
+                    required
+                  />
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">Add User</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="clearUserForm()"
+              >
+                Clear
+              </button>
+            </form>
+          </div>
+
+          <div class="section">
+            <h3>Users List</h3>
+            <div id="userAlert"></div>
+            <div id="userTableContainer" class="table-container">
+              <div class="loading">Loading users...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Products Tab -->
+        <div id="products" class="tab-content">
+          <div class="section">
+            <h3>Add New Product</h3>
+            <form id="productForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="productName">Name *</label>
+                  <input type="text" id="productName" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="productPrice">Price *</label>
+                  <input
+                    type="number"
+                    id="productPrice"
+                    name="price"
+                    step="0.01"
+                    min="0"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="productStock">Stock *</label>
+                  <input
+                    type="number"
+                    id="productStock"
+                    name="stock"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="productDescription">Description</label>
+                <textarea
+                  id="productDescription"
+                  name="description"
+                  placeholder="Enter product description..."
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Product</button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="clearProductForm()"
+              >
+                Clear
+              </button>
+            </form>
+          </div>
+
+          <div class="section">
+            <h3>Products List</h3>
+            <div id="productAlert"></div>
+            <div id="productTableContainer" class="table-container">
+              <div class="loading">Loading products...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Configuration
+      const API_BASE_URL = window.location.origin; // Will work with nginx proxy
+
+      // Global state
+      let currentEditingUser = null;
+      let currentEditingProduct = null;
+
+      // Tab switching
+      function switchTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected tab content
+        document.getElementById(tabName).classList.add("active");
+
+        // Add active class to clicked tab
+        event.target.classList.add("active");
+
+        // Load data for the selected tab
+        if (tabName === "users") {
+          loadUsers();
+        } else if (tabName === "products") {
+          loadProducts();
+        }
+      }
+
+      // Utility functions
+      function showAlert(containerId, message, type = "success") {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000);
+      }
+
+      function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        }).format(amount);
+      }
+
+      // User functions
+      async function loadUsers() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/users`);
+          const data = await response.json();
+
+          const container = document.getElementById("userTableContainer");
+
+          if (!data.success || !data.data || data.data.length === 0) {
+            container.innerHTML = `
+                        <div class="empty-state">
+                            <div>👥</div>
+                            <h3>No users found</h3>
+                            <p>Add your first user to get started!</p>
+                        </div>
+                    `;
+            return;
+          }
+
+          const users = data.data;
+          container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Age</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${users
+                              .map(
+                                (user) => `
+                                <tr>
+                                    <td>${user.id}</td>
+                                    <td>${user.name}</td>
+                                    <td>${user.email}</td>
+                                    <td>${user.age}</td>
+                                    <td>${formatDate(user.created_at)}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="editUser(${
+                                          user.id
+                                        })">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteUser(${
+                                          user.id
+                                        })">Delete</button>
+                                    </td>
+                                </tr>
+                            `
+                              )
+                              .join("")}
+                        </tbody>
+                    </table>
+                `;
+        } catch (error) {
+          console.error("Error loading users:", error);
+          showAlert(
+            "userAlert",
+            "Error loading users: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function createUser(userData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/users`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("userAlert", "User created successfully!", "success");
+            clearUserForm();
+            loadUsers();
+          } else {
+            throw new Error(data.message || "Failed to create user");
+          }
+        } catch (error) {
+          console.error("Error creating user:", error);
+          showAlert(
+            "userAlert",
+            "Error creating user: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function updateUser(id, userData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("userAlert", "User updated successfully!", "success");
+            clearUserForm();
+            loadUsers();
+          } else {
+            throw new Error(data.message || "Failed to update user");
+          }
+        } catch (error) {
+          console.error("Error updating user:", error);
+          showAlert(
+            "userAlert",
+            "Error updating user: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function deleteUser(id) {
+        if (!confirm("Are you sure you want to delete this user?")) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/users/${id}`, {
+            method: "DELETE",
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("userAlert", "User deleted successfully!", "success");
+            loadUsers();
+          } else {
+            throw new Error(data.message || "Failed to delete user");
+          }
+        } catch (error) {
+          console.error("Error deleting user:", error);
+          showAlert(
+            "userAlert",
+            "Error deleting user: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function editUser(id) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/users/${id}`);
+          const data = await response.json();
+
+          if (data.success) {
+            const user = data.data;
+            document.getElementById("userName").value = user.name;
+            document.getElementById("userEmail").value = user.email;
+            document.getElementById("userAge").value = user.age;
+
+            currentEditingUser = id;
+
+            // Change form button
+            const submitBtn = document.querySelector(
+              '#userForm button[type="submit"]'
+            );
+            submitBtn.textContent = "Update User";
+            submitBtn.className = "btn btn-success";
+          } else {
+            throw new Error(data.message || "Failed to load user");
+          }
+        } catch (error) {
+          console.error("Error loading user:", error);
+          showAlert(
+            "userAlert",
+            "Error loading user: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      function clearUserForm() {
+        document.getElementById("userForm").reset();
+        currentEditingUser = null;
+
+        // Reset form button
+        const submitBtn = document.querySelector(
+          '#userForm button[type="submit"]'
+        );
+        submitBtn.textContent = "Add User";
+        submitBtn.className = "btn btn-primary";
+      }
+
+      // Product functions
+      async function loadProducts() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/products`);
+          const data = await response.json();
+
+          const container = document.getElementById("productTableContainer");
+
+          if (!data.success || !data.data || data.data.length === 0) {
+            container.innerHTML = `
+                        <div class="empty-state">
+                            <div>📦</div>
+                            <h3>No products found</h3>
+                            <p>Add your first product to get started!</p>
+                        </div>
+                    `;
+            return;
+          }
+
+          const products = data.data;
+          container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Description</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Created</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${products
+                              .map(
+                                (product) => `
+                                <tr>
+                                    <td>${product.id}</td>
+                                    <td>${product.name}</td>
+                                    <td>${product.description || "N/A"}</td>
+                                    <td>${formatCurrency(product.price)}</td>
+                                    <td>${product.stock}</td>
+                                    <td>${formatDate(product.created_at)}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="editProduct(${
+                                          product.id
+                                        })">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteProduct(${
+                                          product.id
+                                        })">Delete</button>
+                                    </td>
+                                </tr>
+                            `
+                              )
+                              .join("")}
+                        </tbody>
+                    </table>
+                `;
+        } catch (error) {
+          console.error("Error loading products:", error);
+          showAlert(
+            "productAlert",
+            "Error loading products: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function createProduct(productData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/products`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(productData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert(
+              "productAlert",
+              "Product created successfully!",
+              "success"
+            );
+            clearProductForm();
+            loadProducts();
+          } else {
+            throw new Error(data.message || "Failed to create product");
+          }
+        } catch (error) {
+          console.error("Error creating product:", error);
+          showAlert(
+            "productAlert",
+            "Error creating product: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function updateProduct(id, productData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(productData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert(
+              "productAlert",
+              "Product updated successfully!",
+              "success"
+            );
+            clearProductForm();
+            loadProducts();
+          } else {
+            throw new Error(data.message || "Failed to update product");
+          }
+        } catch (error) {
+          console.error("Error updating product:", error);
+          showAlert(
+            "productAlert",
+            "Error updating product: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function deleteProduct(id) {
+        if (!confirm("Are you sure you want to delete this product?")) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/products/${id}`, {
+            method: "DELETE",
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert(
+              "productAlert",
+              "Product deleted successfully!",
+              "success"
+            );
+            loadProducts();
+          } else {
+            throw new Error(data.message || "Failed to delete product");
+          }
+        } catch (error) {
+          console.error("Error deleting product:", error);
+          showAlert(
+            "productAlert",
+            "Error deleting product: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function editProduct(id) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/products/${id}`);
+          const data = await response.json();
+
+          if (data.success) {
+            const product = data.data;
+            document.getElementById("productName").value = product.name;
+            document.getElementById("productDescription").value =
+              product.description || "";
+            document.getElementById("productPrice").value = product.price;
+            document.getElementById("productStock").value = product.stock;
+
+            currentEditingProduct = id;
+
+            // Change form button
+            const submitBtn = document.querySelector(
+              '#productForm button[type="submit"]'
+            );
+            submitBtn.textContent = "Update Product";
+            submitBtn.className = "btn btn-success";
+          } else {
+            throw new Error(data.message || "Failed to load product");
+          }
+        } catch (error) {
+          console.error("Error loading product:", error);
+          showAlert(
+            "productAlert",
+            "Error loading product: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      function clearProductForm() {
+        document.getElementById("productForm").reset();
+        currentEditingProduct = null;
+
+        // Reset form button
+        const submitBtn = document.querySelector(
+          '#productForm button[type="submit"]'
+        );
+        submitBtn.textContent = "Add Product";
+        submitBtn.className = "btn btn-primary";
+      }
+
+      // Event listeners
+      document
+        .getElementById("userForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const userData = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+            age: parseInt(formData.get("age")),
+          };
+
+          if (currentEditingUser) {
+            await updateUser(currentEditingUser, userData);
+          } else {
+            await createUser(userData);
+          }
+        });
+
+      document
+        .getElementById("productForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const productData = {
+            name: formData.get("name"),
+            description: formData.get("description"),
+            price: parseFloat(formData.get("price")),
+            stock: parseInt(formData.get("stock")),
+          };
+
+          if (currentEditingProduct) {
+            await updateProduct(currentEditingProduct, productData);
+          } else {
+            await createProduct(productData);
+          }
+        });
+
+      // Initialize the app
+      document.addEventListener("DOMContentLoaded", () => {
+        loadUsers();
+      });
+    </script>
+  </body>
+</html>
