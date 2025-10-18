@@ -1,6 +1,22 @@
 # 📸 Prints e Demonstração do Funcionamento
 
-## 1. Servidor web e banco de dados
+## 1. Active Directory (AD), DNS e GPO
+
+Suas imagens aqui
+
+## 2. Servidor FTP
+
+Suas imagens aqui
+
+## 3. Servidor VPN (OpenVPN)
+
+Suas imagens aqui
+
+## 4. Servidor DHCP
+
+Suas imagens aqui
+
+## 5. Servidor web e banco de dados
 
 As figuras a seguir demonstram o funcionamento do ambiente de servidor web e banco de dados configurado na AWS.  
 Cada etapa evidencia um componente da arquitetura e comprova o correto funcionamento dos serviços,  
