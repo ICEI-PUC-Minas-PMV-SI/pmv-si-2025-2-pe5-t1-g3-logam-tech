@@ -36,9 +36,16 @@ Coloque aqui as configs
 
 #### Configuração do Servidor
 
-##### 1. Configurar Security Groups
+##### 1. Criação da Instância EC2
 
-##### 1.1. Security Group da VPN
+- Nome: `vpn-server`
+- Sistema operacional: Ubuntu 24.04 LTS
+- Tipo de instância: t3.micro
+- Storage: 8 GB
+- Security Group: VPN
+- IP privado: `172.31.17.170`
+
+##### 2. Security Group da VPN
 
 - Nome: `VPN`
 - Descrição: `Security Group para servidor web`
@@ -48,15 +55,6 @@ Coloque aqui as configs
 - ICMP (Echo Request) – Permitir testes de conectividade (ping) entre cliente e servidor: 0.0.0.0/0
 - Regras de saída:
   - Todos: `0.0.0.0/0:0`
-
-##### 2. Criação da Instância EC2
-
-- Nome: `vpn-server`
-- Sistema operacional: Ubuntu 24.04 LTS
-- Tipo de instância: t3.micro
-- Storage: 8 GB
-- Security Group: VPN
-- IP privado: `172.31.17.170`
 
 ##### 3. Instalação e Configuração do OpenVPN
 
