@@ -16,9 +16,98 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | [Nome do Membro] | Servidor FTP | - | - | - | - |
 | [Nome do Membro] | AD com DNS e GPO | - | - | - | - |
 | [Nome do Membro] | VPN | - | - | - | - |
-| [Nome do Membro] | Servidor DHCP | - | - | - | - |
+| Alice | Servidor DHCP | VPN | `54.89.217.224` | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
 
 ## Detalhamento das Implementações
+
+### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
+
+Coloque aqui as configs
+
+----
+
+### 📁 Servidor FTP - Leandro
+
+Coloque aqui as configs
+
+----
+
+### 📁 Servidor VPN (OpenVPN) - Alice Abreu dos Reis
+
+#### Configuração do Servidor
+
+##### 1. Configurar Security Groups
+
+##### 1.1. Security Group da VPN
+
+- Nome: `VPN`
+- Descrição: `Security Group para servidor web`
+- Regras de entrada:
+- UDP 1194 – Acesso de clientes OpenVPN: 0.0.0.0/0
+- SSH 22 – Acesso administrativo: 0.0.0.0/0
+- ICMP (Echo Request) – Permitir testes de conectividade (ping) entre cliente e servidor: 0.0.0.0/0
+- Regras de saída:
+  - Todos: `0.0.0.0/0:0`
+
+##### 2. Criação da Instância EC2
+
+- Nome: `vpn-server`
+- Sistema operacional: Ubuntu 24.04 LTS
+- Tipo de instância: t3.micro
+- Storage: 8 GB
+- Security Group: VPN
+- IP privado: `172.31.17.170`
+
+##### 3. Instalação e Configuração do OpenVPN
+
+##### 3.1. Conectar ao servidor
+
+```bash
+ssh -i vpn-chave.pem ubuntu@54.210.126.47
+```
+##### 3.2. Atualizar o sistema
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+##### 3.3. Instalar o OpenVPN
+
+```bash
+sudo apt install openvpn -y
+```
+##### 4. Gerar e Enviar Arquivo de Configuração do Cliente (.ovpn)
+
+```bash
+wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
+```
+
+##### 4.1. Baixar o arquivo .ovpn para o computador
+
+```bash
+scp -i vpn-chave.pem ubuntu@54.210.126.47:/home/ubuntu/vpn_client_1.ovpn .
+```
+##### 5. Conexão e Testes
+
+##### 5.1. Conectar ao servidor VPN no cliente (Ubuntu)
+
+```bash
+sudo apt install openvpn -y
+sudo openvpn --config ~/Downloads/vpn_client_1.ovpn
+```
+
+##### 5.2. Testar conectividade com a rede privada
+
+```bash
+ping 172.31.17.170
+```
+----
+
+### 📁 Servidor DHCP - Omar Abreu
+
+Coloque aqui as configs
+
+----
 
 ### 📁 Servidor Web + Banco de Dados - Gabriel dos Reis Nascimento
 
