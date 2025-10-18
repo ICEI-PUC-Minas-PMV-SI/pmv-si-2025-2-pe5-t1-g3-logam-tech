@@ -22,8 +22,6 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 ### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
 
-### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
-
 ## 📤 1. Configuração de Segurança (Security Groups)
 
 ### 1.1. Regras de Entrada — `group-sg-ad`
