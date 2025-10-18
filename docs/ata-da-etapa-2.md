@@ -15,8 +15,8 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | `54.145.137.231` | `172.31.16.36` | N/A | Configuração de servidor web com banco de dados para realizar um CRUD simples. |
 | [Nome do Membro] | Servidor FTP | - | - | - | - |
 | [Nome do Membro] | AD com DNS e GPO | - | - | - | - |
-| [Nome do Membro] | VPN | - | - | - | - |
-| Alice | Servidor DHCP | VPN | `54.89.217.224` | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
+| Alice | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
+| [Nome do Membro] | Servidor DHCP | VPN | - | - | - | - |
 
 ## Detalhamento das Implementações
 
