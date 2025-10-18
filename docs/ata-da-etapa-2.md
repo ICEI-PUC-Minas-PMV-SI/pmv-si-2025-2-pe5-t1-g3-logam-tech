@@ -14,7 +14,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 |--------|---------|------------|------------|----------|-----------|
 | Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | `54.145.137.231` | `172.31.16.36` | N/A | Configuração de servidor web com banco de dados para realizar um CRUD simples. |
 | [Nome do Membro] | Servidor FTP | - | - | - | - |
-| [Nome do Membro] | AD com DNS e GPO | - | - | - | - |
+| Martha Beatriz Siqueira da Silva | AD com DNS e GPO | `52.23.39.125` |  `10.0.1.162 ` | N/A | O AD centraliza a autenticação e o gerenciamento de usuários, grupos e computadores, enquanto o DNS garante a resolução de nomes e as GPOs aplicam políticas. |
 | Alice | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
 | [Nome do Membro] | Servidor DHCP | VPN | - | - | - | - |
 
@@ -22,7 +22,383 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 ### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
 
-Coloque aqui as configs
+### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
+
+## 📤 1. Configuração de Segurança (Security Groups)
+
+### 1.1. Regras de Entrada — `group-sg-ad`
+
+**Descrição:** Define o tráfego permitido para o Controlador de Domínio (AD, DNS, Kerberos, LDAP, SMB).
+
+**Objetivo:** Permitir autenticação, replicação, resolução de nomes e aplicação de políticas entre máquinas da VPC `10.0.0.0/16`.
+
+| Tipo              | Protocolo | Porta / Intervalo | Origem      | Descrição                            |
+| ----------------- | --------- | ----------------- | ----------- | ------------------------------------ |
+| UDP personalizado | UDP       | 464               | 10.0.0.0/16 | Autenticação Kerberos (UDP)          |
+| TCP personalizado | TCP       | 88                | 10.0.0.0/16 | Kerberos (TCP) — autenticação segura |
+| UDP personalizado | UDP       | 88                | 10.0.0.0/16 | Kerberos (UDP) — autenticação rápida |
+| LDAP              | TCP       | 389               | 10.0.0.0/16 | Diretório e autenticação LDAP        |
+| UDP personalizado | UDP       | 389               | 10.0.0.0/16 | LDAP (UDP)                           |
+| TCP personalizado | TCP       | 464               | 10.0.0.0/16 | Troca de senha Kerberos              |
+| TCP personalizado | TCP       | 135               | 10.0.0.0/16 | RPC (Remote Procedure Call)          |
+| TCP personalizado | TCP       | 139               | 10.0.0.0/16 | NetBIOS Session Service              |
+| UDP personalizado | UDP       | 137–138           | 10.0.0.0/16 | NetBIOS Name & Datagram              |
+| SMB               | TCP       | 445               | 10.0.0.0/16 | Compartilhamento SYSVOL e NETLOGON   |
+| TCP personalizado | TCP       | 636               | 10.0.0.0/16 | LDAP Seguro (LDAPS)                  |
+| TCP personalizado | TCP       | 3268–3269         | 10.0.0.0/16 | Global Catalog                       |
+| DNS (TCP)         | TCP       | 53                | 0.0.0.0/0   | Resolução DNS (TCP)                  |
+| DNS (UDP)         | UDP       | 53                | 0.0.0.0/0   | Resolução DNS (UDP)                  |
+| SSH               | TCP       | 22                | 0.0.0.0/0   | Acesso remoto                        |
+| ICMP              | ICMP      | Tudo              | 10.0.0.0/16 | Ping e diagnóstico interno           |
+
+#### **Saída**
+
+| Tipo                | Destino     | Descrição                                    |
+| ------------------- | ----------- | -------------------------------------------- |
+| Todos os protocolos | `0.0.0.0/0` | Comunicação livre  |
+
+---
+
+### 1.2. Regras de Entrada — `group-sg-client`
+
+| Tipo | Protocolo | Porta | Origem             | Descrição                                             |
+| ---- | --------- | ----- | ------------------ | ----------------------------------------------------- |
+| SSH  | TCP       | 22    | 0.0.0.0/0          | Acesso remoto (Linux)                                 |
+| RDP  | TCP       | 3389  | 191.165.213.101/32 | Acesso remoto (Windows) via IP fixo da administradora |
+
+#### **Saída**
+
+| Tipo                | Destino     | Descrição                                 |
+| ------------------- | ----------- | ----------------------------------------- |
+| Todos os protocolos | `0.0.0.0/0` | Comunicação livre |
+
+
+## 🌐 2. Configuração DNS — Route 53 (Zona Privada)
+
+**Descrição:** A zona hospedada privada `corp.logamtech.local` é usada para resolução interna entre as instâncias da VPC.
+
+| Nome                              | Tipo | Valor            | Função       |
+| --------------------------------- | ---- | ---------------- | ------------ |
+| `ftp.corp.logamtech.local`        | A    | `18.212.95.192`  | Servidor FTP |
+| `web-server.corp.logamtech.local` | A    | `54.145.137.231` | Servidor Web |
+
+
+
+## 🖥️ 3. Criar a Instância EC2 do Controlador de Domínio
+
+| Parâmetro      | Valor                   |
+| -------------- | ----------------------- |
+| Nome           | `dc1-puc`               |
+| SO             | Ubuntu Server 22.04 LTS |
+| Tipo           | `t3.micro`              |
+| Security Group | `group-sg-ad`           |
+
+### 3.1. Elastic IP
+
+**Objetivo:** Garantir IP fixo para o DC.
+
+```bash
+Elastic IP: 52.23.39.125
+Instância: dc1-puc
+```
+
+---
+
+## ⚙️ 4. Configuração do Servidor AD/DC
+
+### 4.1. Acesso à instância
+
+```bash
+ssh -i "[chave-ssh]" ubuntu@52.23.39.125
+```
+
+### 4.2. Atualização dos pacotes
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### 4.3. Instalação de dependências
+
+```bash
+sudo apt install samba krb5-config winbind smbclient dnsutils ldb-tools ntp -y
+```
+
+**Durante a configuração do Kerberos:**
+
+```bash
+Realm: CORP.LOGAMTECH.LOCAL
+KDC: dc1.corp.logamtech.local
+Admin Server: dc1.corp.logamtech.local
+```
+
+---
+
+## 🧱 5. Provisionamento do Samba AD/DC
+
+### 5.1. Backup do arquivo padrão
+
+```bash
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
+```
+
+### 5.2. Provisionar domínio
+
+```bash
+sudo samba-tool domain provision \
+  --realm=CORP.LOGAMTECH.LOCAL \
+  --domain=CORP \
+  --server-role=dc \
+  --dns-backend=SAMBA_INTERNAL \
+  --use-rfc2307
+```
+
+> **Descrição:** Cria a estrutura do domínio `CORP.LOGAMTECH.LOCAL` com suporte a Kerberos, LDAP e DNS interno.
+
+### 5.3. Substituir arquivo de configuração ativo
+
+```bash
+sudo cp /var/lib/samba/private/smb.conf /etc/samba/smb.conf
+```
+
+### 5.4. Atualizar DNS local (`resolv.conf`)
+
+```bash
+sudo nano /etc/resolv.conf
+```
+
+**Conteúdo:**
+
+```
+nameserver 127.0.0.1
+search corp.logamtech.local
+```
+
+### 5.5. Configurar hostname
+
+```bash
+hostnamectl set-hostname dc1
+```
+
+---
+
+## 🔐 6. Configurar e Validar o Kerberos
+
+### 6.1. Testar autenticação
+
+```bash
+kinit administrator@CORP.LOGAMTECH.LOCAL
+```
+
+### 6.2. Listar ticket
+
+```bash
+klist
+```
+
+**Explicação:**
+
+`kinit` autentica e obtém um *ticket*.
+
+`klist` mostra o ticket emitido e sua validade, confirmando o funcionamento do Kerberos.
+
+
+## 🔧 7. Ativar e Validar Serviços
+
+### 7.1. Ativar e iniciar o Samba
+
+```bash
+sudo systemctl unmask samba-ad-dc
+sudo systemctl enable samba-ad-dc
+sudo systemctl start samba-ad-dc
+```
+
+### 7.2. Verificar status
+
+```bash
+sudo systemctl status samba-ad-dc
+```
+
+### 7.3. Validar nível funcional
+
+```bash
+samba-tool domain level show
+```
+
+> **Descrição:** Exibe os níveis de *forest* e *domain*, indicando que o AD foi promovido corretamente.
+
+### 7.4. Testar resolução DNS
+
+```bash
+host -t A dc1.corp.logamtech.local
+```
+
+> **Descrição:** Retorna o IP do DC se o DNS interno estiver funcionando.
+
+
+
+## 🧱 8. Criar grupos e usuários no domínio
+
+### 8.1. Grupo administrativo `Administradores_Logam`
+
+**Descrição:** Este grupo terá privilégios administrativos dentro do domínio e será usado para centralizar as permissões de gerenciamento do AD.
+
+```bash
+sudo samba-tool group add "Administradores_Logam" --description="Grupo com privilégios administrativos no domínio"
+```
+
+### 8.2. Grupo usuários comuns `Usuarios_Logam`
+
+```bash
+sudo samba-tool group add "Users_Logam" --description="Grupo padrão de usuários do domínio"
+```
+
+### 8.3. Criando usuários no domínio
+
+**Descrição:** Cria contas de usuário dentro do domínio CORP.LOGAMTECH.LOCAL.
+
+**Padrão de senha:** Nome!2025
+
+```bash
+sudo samba-tool user create andre 'Andre!2025'
+sudo samba-tool user create renata 'Renata!2025'
+sudo samba-tool user create marcelo 'Marcelo!2025'
+sudo samba-tool user create patricia 'Patricia!2025'
+sudo samba-tool user create diego 'Diego!2025'
+sudo samba-tool user create laura 'Laura!2025'
+sudo samba-tool user create cristina 'Cristina!2025'
+sudo samba-tool user create gustavo 'Gustavo!2025'
+sudo samba-tool user create nathalia 'Nathalia!2025'
+sudo samba-tool user create bruno 'Bruno!2025'
+sudo samba-tool user create caroline 'Caroline!2025'
+sudo samba-tool user create joao 'Joao!2025'
+sudo samba-tool user create monique 'Monique!2025'
+sudo samba-tool user create arthur 'Arthur!2025'
+sudo samba-tool user create elisa 'Elisa!2025'
+sudo samba-tool user create henrique 'Henrique!2025'
+sudo samba-tool user create isabela 'Isabela!2025'
+sudo samba-tool user create pedro 'Pedro!2025'
+sudo samba-tool user create lorena 'Lorena!2025'
+sudo samba-tool user create ricardo 'Ricardo!2025'
+```
+
+### 8.3.1 Listar os usuários criados e verificar um usuário específico
+
+Para listar todos os usuários criados:
+
+```bash
+sudo samba-tool user list
+```
+
+Para verificar um usuário específico (exemplo: renata):
+
+```bash
+sudo samba-tool user show renata
+```
+
+### 8.4. Adicionar usuários aos grupos
+
+**Descrição:** Associa os usuários criados aos grupos correspondentes de acordo com suas funções e permissões.
+
+```bash
+sudo samba-tool group addmembers "Users_Logam" Andre Renata Marcelo Patricia Diego Laura Cristina Gustavo Nathalia Bruno Caroline Joao Monique Arthur Elisa Henrique Isabela Pedro Lorena Ricardo
+```
+
+**Descrição:** Grupo com privilégios administrativos para gerenciar o domínio (criação de usuários, senhas, políticas, etc.)
+
+```bash
+sudo samba-tool group addmembers "Administradores_Logam" Martha Gustavo Patricia Ricardo Nathalia Andre
+```
+
+### 8.5. Validar o domínio e os grupos criados
+
+```bash
+sudo samba-tool user list
+sudo samba-tool group list
+sudo samba-tool group show "Users_Logam"
+sudo samba-tool group show "Administradores_Logam"
+```
+
+### 8.6. Validar autenticação Kerberos com usuário do AD
+
+```bash
+kinit martha@CORP.LOGAMTECH.LOCAL
+klist
+```
+
+---
+
+## 💻 9. Validar Ingresso de EC2 no Domínio
+
+### 9.1 Criar a Instância EC2 do cliente
+
+| Parâmetro      | Valor                   |
+| -------------- | ----------------------- |
+| Nome           | `client-01`             |
+| SO             | Ubuntu Server 22.04 LTS |
+| Tipo           | `t3.large`              |
+| Security Group | `group-sg-client`       |
+
+### 9.1.1 Elastic IP
+
+**Objetivo:** Garantir IP fixo para o DC.
+
+```bash
+Elastic IP: 98.90.28.104
+Instância: client-01
+```
+
+### 9.2. Atualizar pacotes do sistema
+
+```bash
+sudo apt update && sudo apt upgrade -y
+```
+
+### 9.3. Instalar dependências de comunicação com o AD
+
+```bash
+sudo apt install realmd sssd-ad sssd-tools adcli krb5-user samba-common -y
+```
+
+### 9.4. Verificar descoberta do domínio
+
+```bash
+realm discover corp.logamtech.local
+```
+
+### 9.5. Corrigir DNS (caso necessário)
+
+```bash
+sudo nano /etc/resolv.conf
+```
+
+**Conteúdo:**
+
+```
+nameserver 10.0.1.162
+search corp.logamtech.local
+```
+
+### 9.6. Ingressar cliente no domínio
+
+💡 Durante o processo será solicitada a senha do administrador do domínio.
+
+```bash
+sudo realm join --user=administrator@CORP.LOGAMTECH.LOCAL corp.logamtech.local
+```
+
+### 9.7. Validar se o EC2 foi vinculado corretamente ao domínio
+
+```bash
+realm list
+```
+
+### 9.8. Validar autenticação de um usuário
+
+```bash
+id martha@corp.logamtech.local
+getent passwd martha@corp.logamtech.local
+```
 
 ----
 
