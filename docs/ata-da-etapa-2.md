@@ -13,7 +13,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | Membro | Serviço | IP Público | IP Privado | Usuário de acesso | Função |
 |--------|---------|------------|------------|----------|-----------|
 | Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | `54.145.137.231` | `172.31.16.36` | N/A | Configuração de servidor web com banco de dados para realizar um CRUD simples. |
-| [Nome do Membro] | Servidor FTP | - | - | - | - |
+| Leandro Augusto Santos Araujo | Servidor FTP | 18.206.176.203 | 172.31.17.229 | N/A | A configuração FTP para transferir arquivos entre um computador e um servidor em uma rede. |
 | Martha Beatriz Siqueira da Silva | AD com DNS e GPO | `52.23.39.125` |  `10.0.1.162 ` | N/A | O AD centraliza a autenticação e o gerenciamento de usuários, grupos e computadores, enquanto o DNS garante a resolução de nomes e as GPOs aplicam políticas. |
 | Alice | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
 | Omar | Servidor DHCP | - | 192.168.1.1 | N/A | Configuração de servidor DHCP responsável por distribuir endereços IP automaticamente aos dispositivos da rede local. |
