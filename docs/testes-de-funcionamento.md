@@ -43,6 +43,15 @@ Nas Figuras abaixo demosntra a habilitação do Firewall e das Regras de Seguran
 ![image](images/ftp/regra%20e%20habilitacao%20do%20firewall.png)
 ![image](images/ftp/regras%20tcp.png)
 
+### **Figura 5 – Conexão com o servidor**
+
+Nas Figuras abaixo demosntra a conexão com servidor pelo FileZilla.
+
+![image](images/ftp/diretorio.png)
+
+
+
+
 
 ---
 
