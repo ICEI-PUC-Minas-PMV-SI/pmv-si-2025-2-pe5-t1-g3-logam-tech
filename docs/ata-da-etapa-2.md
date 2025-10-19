@@ -438,13 +438,13 @@ sudo service vsftpd status
 
 ##### 4. Configuração das Regras de Entrada (Inbound Rules) da EC2
 
-- **Porta 22**: 0.0.0.0/0 (SSH)
-- **Portas 20-21**: 0.0.0.0/0 (Custom TCP)
-- **Portas 12000-12100**: 0.0.0.0/0 (Custom TCP)
-- **Porta 22**: `0.0.0.0/0` (SSH)
-- **Portas 20-21**: `0.0.0.0/0` (Custom TCP)
-- **Portas 12000-12100**: `0.0.0.0/0` (Custom TCP)
-
+-- **Porta 22**: 0.0.0.0/0 (SSH)
+-- **Portas 20-21**: 0.0.0.0/0 (Custom TCP)
+-- **Portas 12000-12100**: 0.0.0.0/0 (Custom TCP)
++- **Porta 22**: `0.0.0.0/0` (SSH)
++- **Portas 20-21**: `0.0.0.0/0` (Custom TCP)
++- **Portas 12000-12100**: `0.0.0.0/0` (Custom TCP)
+```
 ----
 
 #### 📁 - Servidor VPN (OpenVPN) - Alice Abreu dos Reis
