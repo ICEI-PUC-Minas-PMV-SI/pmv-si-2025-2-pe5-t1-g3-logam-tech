@@ -49,7 +49,12 @@ Nas Figuras abaixo demosntra a conexão com servidor pelo FileZilla.
 
 ![image](images/ftp/diretorio.png)
 
+### **Figura 6 – Arquivos do servidor**
 
+Nas figuras abaixo demonstra permissões nas pastas, baixando arquivos do servidor, e abrindo arquivos do servidor na maquina local.
+
+![image](images/ftp/permissão.png)
+![image](images/ftp/fz1.png)
 
 
 
