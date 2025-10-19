@@ -402,7 +402,49 @@ getent passwd martha@corp.logamtech.local
 
 ### 📁 Servidor FTP - Leandro
 
-Coloque aqui as configs
+#### Configuração do Servidor
+
+##### 1. Acesso à VM
+##### 1. Criar o EC2 para o servidor ftp
+
+- Conectado à instância EC2 via SSH
+- Sistema operacional: Ubuntu
+- Usuário: ubuntu
+- Nome: `novoftp`
+- Sistema operacional: Ubuntu 24.04 LTS
+- Tipo de instância: `t3.micro`
+- Security Group: `novoftp`
+- Storage: `8GB`
+
+##### 2. Acessar o servidor ftp
+
+```bash
+ssh -i "novoftp.pem" ubuntu@ec2-18-206-176-203.compute-1.amazonaws.com
+```
+
+##### 2. Instalação do vsftpd
+##### 3. Instalação e Configuração do vsftpd
+
+```bash
+sudo apt install vsftpd -y
+```
+
+##### 3. Verificação do Status do Serviço
+##### 3.1. Verificação do Status do Serviço
+
+```bash
+sudo service vsftpd status
+@@ -46,9 +54,9 @@ sudo service vsftpd status
+
+##### 4. Configuração das Regras de Entrada (Inbound Rules) da EC2
+
+- **Porta 22**: 0.0.0.0/0 (SSH)
+- **Portas 20-21**: 0.0.0.0/0 (Custom TCP)
+- **Portas 12000-12100**: 0.0.0.0/0 (Custom TCP)
+- **Porta 22**: `0.0.0.0/0` (SSH)
+- **Portas 20-21**: `0.0.0.0/0` (Custom TCP)
+- **Portas 12000-12100**: `0.0.0.0/0` (Custom TCP)
+
 
 ----
 
