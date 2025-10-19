@@ -21,6 +21,14 @@ Essa instância executa o sistema operacional Ubuntu Server 24.04 LTS, utiliza o
 
 ----
 
+### **Figura 2 – Regras de Segurança do Servidor FTP (Security Group)**
+
+A Figura 2 mostra o Security Group configurado para a instância FTP.
+
+![image](images/ftp/Regras%20de%20entrada.png)
+
+
+
 ## 3. Servidor VPN (OpenVPN)
 
 As figuras a seguir demonstram o funcionamento do servidor VPN configurado na instância EC2 da AWS.
