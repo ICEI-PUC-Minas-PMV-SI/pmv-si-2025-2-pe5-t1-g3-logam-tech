@@ -541,7 +541,6 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
 
 ```bash
 sudo systemctl restart isc-dhcp-server
-sudo systemctl enable isc-dhcp-server
 sudo systemctl status isc-dhcp-server
 ```
 Um cliente conectado na mesma rede interna obteve automaticamente um endereço IP dentro da faixa 192.168.1.51 - 192.168.1.100, confirmando o funcionamento correto do serviço DHCP.
