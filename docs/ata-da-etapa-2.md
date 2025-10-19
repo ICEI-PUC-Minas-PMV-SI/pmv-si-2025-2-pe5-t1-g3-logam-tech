@@ -15,16 +15,16 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | `54.145.137.231` | `172.31.16.36` | N/A | Configuração de servidor web com banco de dados para realizar um CRUD simples. |
 | Leandro Augusto Santos Araujo | Servidor FTP | 18.206.176.203 | 172.31.17.229 | N/A | A configuração FTP para transferir arquivos entre um computador e um servidor em uma rede. |
 | Martha Beatriz Siqueira da Silva | AD com DNS e GPO | `52.23.39.125` |  `10.0.1.162 ` | N/A | O AD centraliza a autenticação e o gerenciamento de usuários, grupos e computadores, enquanto o DNS garante a resolução de nomes e as GPOs aplicam políticas. |
-| Alice | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
+| Alice Abreu dos Rei | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
 | Omar | Servidor DHCP | - | 192.168.1.1 | N/A | Configuração de servidor DHCP responsável por distribuir endereços IP automaticamente aos dispositivos da rede local. |
 
 ## Detalhamento das Implementações
 
 ### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
 
-## 📤 1. Configuração de Segurança (Security Groups)
+#### 1. Configuração de Segurança (Security Groups)
 
-### 1.1. Regras de Entrada — `group-sg-ad`
+##### 1.1. Regras de Entrada — `group-sg-ad`
 
 **Descrição:** Define o tráfego permitido para o Controlador de Domínio (AD, DNS, Kerberos, LDAP, SMB).
 
@@ -49,7 +49,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | SSH               | TCP       | 22                | 0.0.0.0/0   | Acesso remoto                        |
 | ICMP              | ICMP      | Tudo              | 10.0.0.0/16 | Ping e diagnóstico interno           |
 
-#### **Saída**
+##### **Saída**
 
 | Tipo                | Destino     | Descrição                                    |
 | ------------------- | ----------- | -------------------------------------------- |
@@ -57,21 +57,21 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 ---
 
-### 1.2. Regras de Entrada — `group-sg-client`
+##### 1.2. Regras de Entrada — `group-sg-client`
 
 | Tipo | Protocolo | Porta | Origem             | Descrição                                             |
 | ---- | --------- | ----- | ------------------ | ----------------------------------------------------- |
 | SSH  | TCP       | 22    | 0.0.0.0/0          | Acesso remoto (Linux)                                 |
 | RDP  | TCP       | 3389  | 191.165.213.101/32 | Acesso remoto (Windows) via IP fixo da administradora |
 
-#### **Saída**
+##### **Saída**
 
 | Tipo                | Destino     | Descrição                                 |
 | ------------------- | ----------- | ----------------------------------------- |
 | Todos os protocolos | `0.0.0.0/0` | Comunicação livre |
 
 
-## 🌐 2. Configuração DNS — Route 53 (Zona Privada)
+#### 2. Configuração DNS — Route 53 (Zona Privada)
 
 **Descrição:** A zona hospedada privada `corp.logamtech.local` é usada para resolução interna entre as instâncias da VPC.
 
@@ -81,8 +81,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | `web-server.corp.logamtech.local` | A    | `54.145.137.231` | Servidor Web |
 
 
-
-## 🖥️ 3. Criar a Instância EC2 do Controlador de Domínio
+#### 3. Criar a Instância EC2 do Controlador de Domínio
 
 | Parâmetro      | Valor                   |
 | -------------- | ----------------------- |
@@ -91,7 +90,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | Tipo           | `t3.micro`              |
 | Security Group | `group-sg-ad`           |
 
-### 3.1. Elastic IP
+##### 3.1. Elastic IP
 
 **Objetivo:** Garantir IP fixo para o DC.
 
@@ -102,21 +101,21 @@ Instância: dc1-puc
 
 ---
 
-## ⚙️ 4. Configuração do Servidor AD/DC
+#### 4 Configuração do Servidor AD/DC
 
-### 4.1. Acesso à instância
+##### 4.1. Acesso à instância
 
 ```bash
 ssh -i "[chave-ssh]" ubuntu@52.23.39.125
 ```
 
-### 4.2. Atualização dos pacotes
+##### 4.2. Atualização dos pacotes
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 4.3. Instalação de dependências
+##### 4.3. Instalação de dependências
 
 ```bash
 sudo apt install samba krb5-config winbind smbclient dnsutils ldb-tools ntp -y
@@ -132,15 +131,15 @@ Admin Server: dc1.corp.logamtech.local
 
 ---
 
-## 🧱 5. Provisionamento do Samba AD/DC
+#### 5. Provisionamento do Samba AD/DC
 
-### 5.1. Backup do arquivo padrão
+##### 5.1. Backup do arquivo padrão
 
 ```bash
 sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
 ```
 
-### 5.2. Provisionar domínio
+##### 5.2. Provisionar domínio
 
 ```bash
 sudo samba-tool domain provision \
@@ -153,13 +152,13 @@ sudo samba-tool domain provision \
 
 > **Descrição:** Cria a estrutura do domínio `CORP.LOGAMTECH.LOCAL` com suporte a Kerberos, LDAP e DNS interno.
 
-### 5.3. Substituir arquivo de configuração ativo
+##### 5.3. Substituir arquivo de configuração ativo
 
 ```bash
 sudo cp /var/lib/samba/private/smb.conf /etc/samba/smb.conf
 ```
 
-### 5.4. Atualizar DNS local (`resolv.conf`)
+##### 5.4. Atualizar DNS local (`resolv.conf`)
 
 ```bash
 sudo nano /etc/resolv.conf
@@ -172,7 +171,7 @@ nameserver 127.0.0.1
 search corp.logamtech.local
 ```
 
-### 5.5. Configurar hostname
+##### 5.5. Configurar hostname
 
 ```bash
 hostnamectl set-hostname dc1
@@ -180,15 +179,15 @@ hostnamectl set-hostname dc1
 
 ---
 
-## 🔐 6. Configurar e Validar o Kerberos
+#### 6. Configurar e Validar o Kerberos
 
-### 6.1. Testar autenticação
+##### 6.1. Testar autenticação
 
 ```bash
 kinit administrator@CORP.LOGAMTECH.LOCAL
 ```
 
-### 6.2. Listar ticket
+##### 6.2. Listar ticket
 
 ```bash
 klist
@@ -200,10 +199,9 @@ klist
 
 `klist` mostra o ticket emitido e sua validade, confirmando o funcionamento do Kerberos.
 
+#### 7. Ativar e Validar Serviços
 
-## 🔧 7. Ativar e Validar Serviços
-
-### 7.1. Ativar e iniciar o Samba
+##### 7.1. Ativar e iniciar o Samba
 
 ```bash
 sudo systemctl unmask samba-ad-dc
@@ -211,13 +209,13 @@ sudo systemctl enable samba-ad-dc
 sudo systemctl start samba-ad-dc
 ```
 
-### 7.2. Verificar status
+##### 7.2. Verificar status
 
 ```bash
 sudo systemctl status samba-ad-dc
 ```
 
-### 7.3. Validar nível funcional
+##### 7.3. Validar nível funcional
 
 ```bash
 samba-tool domain level show
@@ -225,7 +223,7 @@ samba-tool domain level show
 
 > **Descrição:** Exibe os níveis de *forest* e *domain*, indicando que o AD foi promovido corretamente.
 
-### 7.4. Testar resolução DNS
+##### 7.4. Testar resolução DNS
 
 ```bash
 host -t A dc1.corp.logamtech.local
@@ -233,11 +231,9 @@ host -t A dc1.corp.logamtech.local
 
 > **Descrição:** Retorna o IP do DC se o DNS interno estiver funcionando.
 
+#### 8. Criar grupos e usuários no domínio
 
-
-## 🧱 8. Criar grupos e usuários no domínio
-
-### 8.1. Grupo administrativo `Administradores_Logam`
+##### 8.1. Grupo administrativo `Administradores_Logam`
 
 **Descrição:** Este grupo terá privilégios administrativos dentro do domínio e será usado para centralizar as permissões de gerenciamento do AD.
 
@@ -245,13 +241,13 @@ host -t A dc1.corp.logamtech.local
 sudo samba-tool group add "Administradores_Logam" --description="Grupo com privilégios administrativos no domínio"
 ```
 
-### 8.2. Grupo usuários comuns `Usuarios_Logam`
+##### 8.2. Grupo usuários comuns `Usuarios_Logam`
 
 ```bash
 sudo samba-tool group add "Users_Logam" --description="Grupo padrão de usuários do domínio"
 ```
 
-### 8.3. Criando usuários no domínio
+##### 8.3. Criando usuários no domínio
 
 **Descrição:** Cria contas de usuário dentro do domínio CORP.LOGAMTECH.LOCAL.
 
@@ -280,7 +276,7 @@ sudo samba-tool user create lorena 'Lorena!2025'
 sudo samba-tool user create ricardo 'Ricardo!2025'
 ```
 
-### 8.3.1 Listar os usuários criados e verificar um usuário específico
+##### 8.3.1 Listar os usuários criados e verificar um usuário específico
 
 Para listar todos os usuários criados:
 
@@ -294,7 +290,7 @@ Para verificar um usuário específico (exemplo: renata):
 sudo samba-tool user show renata
 ```
 
-### 8.4. Adicionar usuários aos grupos
+##### 8.4. Adicionar usuários aos grupos
 
 **Descrição:** Associa os usuários criados aos grupos correspondentes de acordo com suas funções e permissões.
 
@@ -308,7 +304,7 @@ sudo samba-tool group addmembers "Users_Logam" Andre Renata Marcelo Patricia Die
 sudo samba-tool group addmembers "Administradores_Logam" Martha Gustavo Patricia Ricardo Nathalia Andre
 ```
 
-### 8.5. Validar o domínio e os grupos criados
+##### 8.5. Validar o domínio e os grupos criados
 
 ```bash
 sudo samba-tool user list
@@ -317,7 +313,7 @@ sudo samba-tool group show "Users_Logam"
 sudo samba-tool group show "Administradores_Logam"
 ```
 
-### 8.6. Validar autenticação Kerberos com usuário do AD
+##### 8.6. Validar autenticação Kerberos com usuário do AD
 
 ```bash
 kinit martha@CORP.LOGAMTECH.LOCAL
@@ -326,9 +322,9 @@ klist
 
 ---
 
-## 💻 9. Validar Ingresso de EC2 no Domínio
+#### 9. Validar Ingresso de EC2 no Domínio
 
-### 9.1 Criar a Instância EC2 do cliente
+##### 9.1 Criar a Instância EC2 do cliente
 
 | Parâmetro      | Valor                   |
 | -------------- | ----------------------- |
@@ -337,7 +333,7 @@ klist
 | Tipo           | `t3.large`              |
 | Security Group | `group-sg-client`       |
 
-### 9.1.1 Elastic IP
+##### 9.1.1 Elastic IP
 
 **Objetivo:** Garantir IP fixo para o DC.
 
@@ -346,25 +342,25 @@ Elastic IP: 98.90.28.104
 Instância: client-01
 ```
 
-### 9.2. Atualizar pacotes do sistema
+##### 9.2. Atualizar pacotes do sistema
 
 ```bash
 sudo apt update && sudo apt upgrade -y
 ```
 
-### 9.3. Instalar dependências de comunicação com o AD
+##### 9.3. Instalar dependências de comunicação com o AD
 
 ```bash
 sudo apt install realmd sssd-ad sssd-tools adcli krb5-user samba-common -y
 ```
 
-### 9.4. Verificar descoberta do domínio
+##### 9.4. Verificar descoberta do domínio
 
 ```bash
 realm discover corp.logamtech.local
 ```
 
-### 9.5. Corrigir DNS (caso necessário)
+##### 9.5. Corrigir DNS (caso necessário)
 
 ```bash
 sudo nano /etc/resolv.conf
@@ -377,21 +373,21 @@ nameserver 10.0.1.162
 search corp.logamtech.local
 ```
 
-### 9.6. Ingressar cliente no domínio
+##### 9.6. Ingressar cliente no domínio
 
-💡 Durante o processo será solicitada a senha do administrador do domínio.
+Durante o processo será solicitada a senha do administrador do domínio.
 
 ```bash
 sudo realm join --user=administrator@CORP.LOGAMTECH.LOCAL corp.logamtech.local
 ```
 
-### 9.7. Validar se o EC2 foi vinculado corretamente ao domínio
+##### 9.7. Validar se o EC2 foi vinculado corretamente ao domínio
 
 ```bash
 realm list
 ```
 
-### 9.8. Validar autenticação de um usuário
+##### 9.8. Validar autenticação de um usuário
 
 ```bash
 id martha@corp.logamtech.local
@@ -404,8 +400,8 @@ getent passwd martha@corp.logamtech.local
 
 #### Configuração do Servidor
 
-##### 1. Acesso à VM
-##### 1. Criar o EC2 para o servidor ftp
+#### 1. Acesso à VM
+##### 1.1 Criar o EC2 para o servidor ftp
 
 - Conectado à instância EC2 via SSH
 - Sistema operacional: Ubuntu
@@ -416,21 +412,20 @@ getent passwd martha@corp.logamtech.local
 - Security Group: `novoftp`
 - Storage: `8GB`
 
-##### 2. Acessar o servidor ftp
+#### 2. Acessar o servidor ftp
 
 ```bash
 ssh -i "novoftp.pem" ubuntu@ec2-18-206-176-203.compute-1.amazonaws.com
 ```
 
-##### 2. Instalação do vsftpd
 ##### 3. Instalação e Configuração do vsftpd
 
 ```bash
 sudo apt install vsftpd -y
 ```
 
-##### 3. Verificação do Status do Serviço
-##### 3.1. Verificação do Status do Serviço
+#### 4. Verificação do Status do Serviço
+##### 4.1. Verificação do Status do Serviço
 
 ```bash
 sudo service vsftpd status
@@ -447,11 +442,11 @@ sudo service vsftpd status
 ```
 ----
 
-#### 📁 - Servidor VPN (OpenVPN) - Alice Abreu dos Reis
+### 📁  Servidor VPN (OpenVPN) - Alice Abreu dos Reis
 
 #### Configuração do Servidor
 
-##### 1. Criação da Instância EC2
+#### 1. Criação da Instância EC2
 
 - Nome: `vpn-server`
 - Sistema operacional: Ubuntu 24.04 LTS
@@ -460,7 +455,7 @@ sudo service vsftpd status
 - Security Group: VPN
 - IP privado: `172.31.17.170`
 
-##### 2. Security Group da VPN
+#### 2. Security Group da VPN
 
 - Nome: `VPN`
 - Descrição: `Security Group para servidor web`
@@ -471,7 +466,7 @@ sudo service vsftpd status
 - Regras de saída:
   - Todos: `0.0.0.0/0:0`
 
-##### 3. Instalação e Configuração do OpenVPN
+#### 3. Instalação e Configuração do OpenVPN
 
 ##### 3.1. Conectar ao servidor
 
@@ -489,7 +484,7 @@ sudo apt update && sudo apt upgrade -y
 ```bash
 sudo apt install openvpn -y
 ```
-##### 4. Gerar e Enviar Arquivo de Configuração do Cliente (.ovpn)
+#### 4. Gerar e Enviar Arquivo de Configuração do Cliente (.ovpn)
 
 ```bash
 wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
@@ -500,7 +495,7 @@ wget https://git.io/vpn -O openvpn-install.sh && bash openvpn-install.sh
 ```bash
 scp -i vpn-chave.pem ubuntu@54.210.126.47:/home/ubuntu/vpn_client_1.ovpn .
 ```
-##### 5. Conexão e Testes
+#### 5. Conexão e Testes
 
 ##### 5.1. Conectar ao servidor VPN no cliente (Ubuntu)
 
@@ -520,7 +515,7 @@ ping 172.31.17.170
 
 #### Configuração do Servidor
 
-##### 1. Criação da Máquina Virtual
+#### 1. Criação da Máquina Virtual
 
 - Nome: `DebianSrv`  
 - Virtualizador: Oracle VM VirtualBox  
@@ -531,7 +526,7 @@ ping 172.31.17.170
   - **enp0s3**: modo *NAT*, usada para acesso à internet.  
   - **enp0s8**: modo *rede interna*, utilizada para fornecer endereços IP aos clientes.
   
-##### 2. Configuração das Interfaces de Rede
+#### 2. Configuração das Interfaces de Rede
 
 Arquivo: `/etc/network/interfaces`
 
@@ -551,7 +546,7 @@ Após salvar, reiniciar a rede:
 ```bash
 sudo systemctl restart networking
 ```
-##### 3. Instalação do Servidor DHCP
+#### 3. Instalação do Servidor DHCP
 ```bash
 # atualizar pacotes
 sudo apt update -y && sudo apt upgrade -y
@@ -559,7 +554,7 @@ sudo apt update -y && sudo apt upgrade -y
 # Instalar dhcp-server
 sudo apt install isc-dhcp-server -y
 ```
-##### 4. Definição da Interface do DHCP
+#### 4. Definição da Interface do DHCP
 
 Arquivo: `/etc/default/isc-dhcp-server`
 ```bash
@@ -567,7 +562,7 @@ Arquivo: `/etc/default/isc-dhcp-server`
 INTERFACESv4="enp0s8"
 ```
 
-##### 5. Configuração do Escopo DHCP
+#### 5. Configuração do Escopo DHCP
 
 Arquivo: `/etc/dhcp/dhcpd.config`
 ```bash
@@ -578,7 +573,7 @@ subnet 192.168.1.0 netmask 255.255.255.0 {
   option domain-name "exemple.org";
 }
 ```
-##### 6. Reinicialização e Teste do Serviço
+#### 6. Reinicialização e Teste do Serviço
 
 ```bash
 sudo systemctl restart isc-dhcp-server
@@ -586,11 +581,13 @@ sudo systemctl status isc-dhcp-server
 ```
 Um cliente conectado na mesma rede interna obteve automaticamente um endereço IP dentro da faixa 192.168.1.51 - 192.168.1.100, confirmando o funcionamento correto do serviço DHCP.
 
+---
+
 ### 📁 Servidor Web + Banco de Dados - Gabriel dos Reis Nascimento
 
 #### Configuração do Servidor
 
-##### 1. Configurar Security Groups
+#### 1. Configurar Security Groups
 
 ##### 1.1. Security Group para servidor web
 
@@ -612,7 +609,7 @@ Um cliente conectado na mesma rede interna obteve automaticamente um endereço I
 - Regras de saída:
   - Todos: `0.0.0.0/0`
 
-##### 2. Criar o RDS PostgreSQL
+#### 2. Criar o RDS PostgreSQL
 
 - Nome: `database-0`
 - Engine: PostgreSQL
@@ -624,7 +621,7 @@ Um cliente conectado na mesma rede interna obteve automaticamente um endereço I
 - Security Group: `Database`
 - Initial database: `test_database`
 
-##### 3. Criar o EC2 para o servidor web
+#### 3. Criar o EC2 para o servidor web
 
 - Nome: `web-server`
 - Sistema operacional: Ubuntu 24.04 LTS
@@ -649,7 +646,7 @@ Um cliente conectado na mesma rede interna obteve automaticamente um endereço I
    - Confirmar que o Elastic IP está associado à instância
    - Anotar o endereço IP público estático para uso posterior
 
-##### 4. Configurar o servidor web
+#### 4. Configurar o servidor web
 
 ##### 4.1. Acessar a instância EC2 `servidor-web`
 
@@ -692,7 +689,7 @@ docker-compose -f docker-compose.prod.yml --env-file .env up -d --build
 
 Adicionar regra de entrada para porta 3000 do security group do servidor web para que seja possível acessar as rotas da API pela internet usando o Elastic IP.
 
-##### 5. Testar a API
+#### 5. Testar a API
 
 ###### 5.1. Teste de saúde
 
