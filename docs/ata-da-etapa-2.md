@@ -22,7 +22,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 ### 📁 Active Directory (AD), DNS e GPO - Martha Beatriz
 
-## 📤 1. Configuração de Segurança (Security Groups)
+## 1. Configuração de Segurança (Security Groups)
 
 ### 1.1. Regras de Entrada — `group-sg-ad`
 
@@ -71,7 +71,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | Todos os protocolos | `0.0.0.0/0` | Comunicação livre |
 
 
-## 🌐 2. Configuração DNS — Route 53 (Zona Privada)
+## 2. Configuração DNS — Route 53 (Zona Privada)
 
 **Descrição:** A zona hospedada privada `corp.logamtech.local` é usada para resolução interna entre as instâncias da VPC.
 
@@ -82,7 +82,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 
 
 
-## 🖥️ 3. Criar a Instância EC2 do Controlador de Domínio
+## 3. Criar a Instância EC2 do Controlador de Domínio
 
 | Parâmetro      | Valor                   |
 | -------------- | ----------------------- |
@@ -102,7 +102,7 @@ Instância: dc1-puc
 
 ---
 
-## ⚙️ 4. Configuração do Servidor AD/DC
+## 4. Configuração do Servidor AD/DC
 
 ### 4.1. Acesso à instância
 
@@ -132,7 +132,7 @@ Admin Server: dc1.corp.logamtech.local
 
 ---
 
-## 🧱 5. Provisionamento do Samba AD/DC
+## 5. Provisionamento do Samba AD/DC
 
 ### 5.1. Backup do arquivo padrão
 
@@ -180,7 +180,7 @@ hostnamectl set-hostname dc1
 
 ---
 
-## 🔐 6. Configurar e Validar o Kerberos
+## 6. Configurar e Validar o Kerberos
 
 ### 6.1. Testar autenticação
 
@@ -201,7 +201,7 @@ klist
 `klist` mostra o ticket emitido e sua validade, confirmando o funcionamento do Kerberos.
 
 
-## 🔧 7. Ativar e Validar Serviços
+## 7. Ativar e Validar Serviços
 
 ### 7.1. Ativar e iniciar o Samba
 
@@ -235,7 +235,7 @@ host -t A dc1.corp.logamtech.local
 
 
 
-## 🧱 8. Criar grupos e usuários no domínio
+## 8. Criar grupos e usuários no domínio
 
 ### 8.1. Grupo administrativo `Administradores_Logam`
 
@@ -326,7 +326,7 @@ klist
 
 ---
 
-## 💻 9. Validar Ingresso de EC2 no Domínio
+## 9. Validar Ingresso de EC2 no Domínio
 
 ### 9.1 Criar a Instância EC2 do cliente
 
@@ -379,7 +379,7 @@ search corp.logamtech.local
 
 ### 9.6. Ingressar cliente no domínio
 
-💡 Durante o processo será solicitada a senha do administrador do domínio.
+Durante o processo será solicitada a senha do administrador do domínio.
 
 ```bash
 sudo realm join --user=administrator@CORP.LOGAMTECH.LOCAL corp.logamtech.local
@@ -397,7 +397,7 @@ realm list
 id martha@corp.logamtech.local
 getent passwd martha@corp.logamtech.local
 ```
-## 🖥️ 10. Criar a Instância EC2 para Gerenciamento de GPOs
+## 10. Criar a Instância EC2 para Gerenciamento de GPOs
 
 ### **Descrição**
 
@@ -414,7 +414,7 @@ Assim, o Windows será utilizado como ferramenta complementar.
 
 ---
 
-### 🔗 10.1. Elastic IP
+### 10.1. Elastic IP
 
 **Objetivo:** Garantir que o servidor Windows mantenha um IP público fixo, permitindo o acesso remoto via RDP e o gerenciamento contínuo do domínio.
 
@@ -425,7 +425,7 @@ Instância: win-server-gpo
 
 ---
 
-### 🖱️ 10.2. Acessar à Instância via RDP
+### 10.2. Acessar à Instância via RDP
 
 Após a criação e inicialização da instância:
 
@@ -442,7 +442,7 @@ Conecte-se ao servidor utilizando o **Elastic IP** informado anteriormente.
 
 ---
 
-### 🌐 10.3. Configurar Placa de Rede (IP Fixo e DNS)
+### 10.3. Configurar Placa de Rede (IP Fixo e DNS)
 
 **Descrição:**
 Foi configurado um IP fixo na interface de rede do Windows Server, garantindo comunicação direta e estável com o **DC Samba/AD** hospedado no Linux.
@@ -488,7 +488,7 @@ ping dc1.corp.logamtech.local
 
 ---
 
-## 🔐 11. Ingressar o Windows Server no Domínio Samba/AD
+## 11. Ingressar o Windows Server no Domínio Samba/AD
 
 ### **Descrição**
 
@@ -498,7 +498,7 @@ Essa integração permite administrar o AD e aplicar **Políticas de Grupo (GPOs
 
 ---
 
-### 🪟 11.1. Acessar configurações de Domínio
+### 11.1. Acessar configurações de Domínio
 
 1. Pressione `Win + R` e execute:
 
@@ -518,7 +518,7 @@ Essa integração permite administrar o AD e aplicar **Políticas de Grupo (GPOs
 
 ---
 
-### 🔑 11.2. Inserir Credenciais do Domínio
+### 11.2. Inserir Credenciais do Domínio
 
 Informe as credenciais do administrador do domínio Samba:
 
@@ -529,7 +529,7 @@ Password: [senha definida durante o provisionamento]
 
 ---
 
-### 🧾 11.3. Resultado esperado
+### 11.3. Resultado esperado
 
 Se a autenticação for bem-sucedida, será exibida a mensagem:
 
@@ -541,7 +541,7 @@ Após confirmar, o sistema solicitará a **reinicialização**.
 
 ---
 
-### 🔁 11.4. Reiniciar e fazer login no domínio
+### 11.4. Reiniciar e fazer login no domínio
 
 Após o reboot, na tela de login selecione **Other user** e entre com:
 
@@ -553,7 +553,7 @@ O servidor agora estará **membro do domínio Samba/AD**.
 
 ---
 
-### 🔍 11.5. Verificar Ingresso no Domínio
+### 11.5. Verificar Ingresso no Domínio
 
 Execute no Prompt de Comando (com o Admin):
 
@@ -569,7 +569,7 @@ Domain: corp.logamtech.local
 
 ---
 
-### 🔐 11.7. Testar Autenticação Kerberos
+### 11.7. Testar Autenticação Kerberos
 
 Confirme a autenticação via Kerberos:
 
@@ -580,13 +580,13 @@ klist
 Se houver um ticket válido, o domínio está autenticando corretamente.
 
 
-## 🧩 12. Instalar Ferramentas de Administração de GPO (RSAT)
+## 12. Instalar Ferramentas de Administração de GPO (RSAT)
 
-### ⚙️ 12.1. Instalar via PowerShell o RSAT e GPMC
+### 12.1. Instalar via PowerShell o RSAT e GPMC
 ```bash
 Install-WindowsFeature -Name RSAT-AD-Tools, RSAT-AD-PowerShell, RSAT-DNS-Server, GPMC
 ```
-### 🧭 12.2. Verificar Instalação
+### 12.2. Verificar Instalação
 
 Execute no campo de pesquisa ou via `Run (Win + R)`:
 
@@ -601,26 +601,26 @@ dsa.msc
 dnsmgmt.msc
 ```
 
-## 🧱 13. Criação e Gerenciamento de GPOs (Group Policy Objects)
+## 13. Criação e Gerenciamento de GPOs (Group Policy Objects)
 
 
-### 🧩 13.1. Criar GPO — "Bloquear Troca de Papel de Parede"
+### 13.1. Criar GPO — "Bloquear Troca de Papel de Parede"
 
 **Objetivo:** Impedir que usuários alterem o plano de fundo do desktop definindo um papel de parede fixo para toda a organização.
 
-### ⚙️ 13.1.1. Criar a GPO
+### 13.1.1. Criar a GPO
 
 ```powershell
 New-GPO -Name "Bloquear Troca de Papel de Parede" -Comment "Impede alteração do plano de fundo do desktop"
 ```
 
-### 🔗 13.1.2. Vincular ao domínio
+### 13.1.2. Vincular ao domínio
 
 ```powershell
 New-GPLink -Name "Bloquear Troca de Papel de Parede" -Target "DC=corp,DC=logamtech,DC=local"
 ```
 
-### 🧱 13.1.3. Definir chaves de registro
+### 13.1.3. Definir chaves de registro
 
 #### 1. Bloquear alteração de wallpaper
 
@@ -649,11 +649,11 @@ gpupdate /force
 ```
 
 
-## 🧩 13.2. Validar políticas aplicadas
+## 13.2. Validar políticas aplicadas
 
-Após a criação da GPO, foi validada a aplicação das políticas tanto localmente quanto no contexto do domínio.
+Após a criação da GPO, foi validada a aplicação das políticas no domínio.
 
-### 📋 Comandos de verificação
+### Comando de verificação
 
 ```powershell
 Get-GPO -All
