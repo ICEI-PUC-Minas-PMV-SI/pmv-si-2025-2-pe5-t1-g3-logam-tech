@@ -98,9 +98,70 @@ A Figura 9 apresenta a execução de um teste de conectividade (`ping`) para ver
 
 ## 4. Servidor DHCP
 
-Suas imagens aqui
+As figuras a seguir demonstram o funcionamento do servidor DHCP configurado na VM DebianSrv.
 
-----
+Cada etapa evidencia a criação da máquina, configuração da rede e distribuição de endereços IP para clientes na rede interna, confirmando que o serviço está ativo e funcional
+
+### **Figura 1 – Máquina Virtual DebianSrv01 e Win11Srv01 no Oracle VM VirtualBox**
+
+A Figura 1 apresenta a máquina virtual criada para hospedar o servidor DHCP e o cliente que irá receber o IP.
+
+A VM executa Debian 13, possui duas interfaces de rede:
+enp0s3: modo NAT, usada para acesso à internet.
+
+enp0s8: modo rede interna, utilizada para fornecer endereços IP aos clientes.
+
+A VM executa Windows 11, possui uma interface rede interna, utilizada para receber endereço IP durante o teste.
+
+![imagem](images/dhcp/oracle-virtualbox.png)
+
+### **Figura 2 – Configuração das Interfaces de Rede**
+
+A Figura 2 mostra o conteúdo do arquivo `/etc/network/interfaces`, evidenciando que:
+- A interface enp0s3 recebe IP automaticamente via DHCP.
+- A interface enp0s8 possui IP fixo 192.168.1.1, servindo como gateway da rede interna.
+
+![imagem](images/dhcp/interfaces.png)
+
+### Figura 3 – Verificação das Interfaces de Rede
+
+A Figura 3 demonstra a execução do comando `ip a` na VM DebianSrv, mostrando que as interfaces de rede estão corretamente configuradas:
+
+- enp0s3 obtendo IP automaticamente via DHCP.
+- enp0s8 com IP fixo 192.168.1.1, servindo como gateway da rede interna.
+
+![imagem](images/dhcp/ip-a.png)
+
+### Figura 4 – Definição da Interface do DHCP
+
+A Figura 4 mostra o arquivo `/etc/default/isc-dhcp-server`, onde a interface de atendimento do DHCP foi configurada como enp0s8.
+
+![imagem](images/dhcp/default-isc-dhcp-server.png)
+
+### Figura 5 – Configuração do Escopo DHCP
+
+A Figura 5 exibe o conteúdo do arquivo /etc/dhcp/dhcpd.config, incluindo:
+
+- Sub-rede interna 192.168.1.0/24
+- Faixa de IPs distribuída aos clientes: 192.168.1.51 - 192.168.1.100
+- Gateway: 192.168.1.1
+- Servidores DNS: 8.8.8.8 e 1.1.1.1
+
+![imagem](images/dhcp/dhcpd-config.png)
+
+### Figura 6 – Reinicialização e Status do Serviço DHCP
+
+A Figura 6 demonstra a execução dos comandos para reiniciar e verificar o status do isc-dhcp-server, confirmando que o serviço está ativo e funcionando corretamente.
+
+![imagem](images/dhcp/status-dhcp.png)
+
+### Figura 7 – Cliente Recebendo Endereço IP
+
+A Figura 7 apresenta uma segunda VM com Windows 11 conectada à rede interna da DebianSrv executando o comando `ipconfig` no terminal.
+
+O cliente recebeu automaticamente um endereço IP dentro da faixa definida no escopo DHCP (192.168.1.51 - 192.168.1.100), confirmando que o servidor DHCP está ativo e funcionando corretamente.
+
+![imagem](images/dhcp/win-dhcp.png)
 
 ## 5. Servidor web e banco de dados
 
