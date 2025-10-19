@@ -157,6 +157,8 @@ A Figura 2 mostra o Security Group configurado para a instância FTP.
 
 ![image](images/ftp/Regras%20de%20entrada.png)
 
+----
+
 ### **Figura 3 – Conexão via SSH com a instância EC2**
 
 A Figura 3 demonstra o processo de conexão via SSH à instância EC2 na AWS.
@@ -165,6 +167,8 @@ Ao realizar a primeira conexão, o sistema exibe o aviso de autenticidade da cha
 Esse procedimento garante que a comunicação com o servidor seja criptografada e autenticada de forma segura.
 
 ![image](images/ftp/conexao%20ssh.png)
+
+----
 
 ### **Figura 4 – Habilitação das Regras de Segurança**
 
@@ -179,6 +183,8 @@ Nas Figuras abaixo demosntra a conexão com servidor pelo FileZilla.
 
 ![image](images/ftp/diretorio.png)
 
+----
+
 ### **Figura 6 – Arquivos do servidor**
 
 Nas figuras abaixo demonstra permissões nas pastas, baixando arquivos do servidor, e abrindo arquivos do servidor na maquina local.
@@ -186,21 +192,16 @@ Nas figuras abaixo demonstra permissões nas pastas, baixando arquivos do servid
 ![image](images/ftp/permissão.png)
 ![image](images/ftp/fz1.png)
 
-
-
 ---
 
-
-## 3. Servidor VPN (OpenVPN)
+## 3. Servidor VPN (OpenVPN) 
 
 As figuras a seguir demonstram o funcionamento do servidor VPN configurado na instância EC2 da AWS.
 Cada etapa evidencia a infraestrutura criada, as regras de segurança aplicadas e a conectividade entre o cliente (máquina local) e o servidor, comprovando o correto funcionamento do serviço OpenVPN.
 
 ### **Figura 1 – Painel da Instância EC2 da VPN na AWS**
 
-A Figura 1 apresenta a instância EC2 utilizada para hospedar o servidor OpenVPN.
-Essa instância executa o sistema operacional Ubuntu Server 24.04 LTS, utiliza o tipo t3.micro e possui IP privado 172.31.17.170.
-Nela foi instalado e configurado o serviço OpenVPN, responsável por gerenciar o túnel de comunicação segura entre o cliente e a rede privada na AWS.
+A Figura 1 apresenta a instância EC2 criada na AWS.
 
 ![image](images/vpn/1-painel-ec2.png)
 ![image](images/vpn/1.1-painel-ec2.png.png)
@@ -217,10 +218,7 @@ A Figura 2 mostra o Security Group configurado para a instância VPN.
 
 ### **Figura 3 – Conexão via SSH com a instância EC2**
 
-A Figura 3 demonstra o processo de conexão via SSH à instância EC2 na AWS.
-Utilizou-se o Windows PowerShell e a chave privada vpn-chave.pem para autenticação segura do usuário ubuntu.
-Ao realizar a primeira conexão, o sistema exibe o aviso de autenticidade da chave (fingerprint), pedindo confirmação do usuário antes de prosseguir.
-Esse procedimento garante que a comunicação com o servidor seja criptografada e autenticada de forma segura.
+A Figura  mostra a conexão SSH sendo estabelecida com a instância EC2.
 
 ![image](images/vpn/3-ssh-ec2.png)
 
@@ -237,15 +235,15 @@ Durante esse processo, foram definidos os seguintes parâmetros:
 
 ### **Figura 5 – Verificação do status do serviço OpenVPN**
 
-A Figura 5 apresenta a execução do comando `systemctl status openvpn` na instância Ubuntu. O status `active (exited)` indica que o serviço OpenVPN foi iniciado corretamente, enquanto `enabled` confirma que ele está configurado para iniciar automaticamente junto ao sistema. Esse passo assegura que o servidor está pronto para aceitar conexões de clientes via VPN.
+A Figura 5 mostra o status do serviço OpenVPN na instância Ubuntu, indicando que ele está ativo e configurado para iniciar automaticamente com o sistema, pronto para aceitar conexões de clientes via VPN.
 
 ![image](images/vpn/5-status-openvpn.png)
 
 ---
 
-### **Figura 6 – Verificação do status do serviço OpenVPN**
+### **Figura 6 – Verificação na máquina virtual**
 
-A Figura 6 mostra novamente a verificação do status do serviço OpenVPN, reforçando que ele está ativo e configurado para inicialização automática. Essa confirmação é essencial para garantir a disponibilidade do servidor antes da conexão de clientes.
+A Figura 6 mostra novamente a verificação do status do serviço OpenVPN na máquina virtual.
 
 ![image](images/vpn/6-servico-openvpn.png)
 
@@ -253,7 +251,7 @@ A Figura 6 mostra novamente a verificação do status do serviço OpenVPN, refor
 
 ### **Figura 7 – Transferência do Arquivo de Configuração do Cliente (.ovpn)**
 
-A Figura 7 ilustra o uso do comando `scp` para copiar o arquivo de configuração do cliente (`vpn_client_1.ovpn`) do servidor EC2 para a máquina local. Esse arquivo contém todas as informações necessárias para que o cliente estabeleça a conexão VPN com o servidor.
+A Figura 7 mostra a cópia do arquivo de configuração do cliente do servidor EC2 para a máquina, contendo os dados necessários para a conexão VPN.
 
 ![image](images/vpn/7-client-ovpn.png)
 
@@ -261,7 +259,7 @@ A Figura 7 ilustra o uso do comando `scp` para copiar o arquivo de configuraçã
 
 ### **Figura 8 – Início da Conexão VPN pelo Cliente**
 
-A Figura 8 demonstra a execução do comando `openvpn --config vpn_client_1.ovpn` no terminal do cliente. Esse passo inicia o tunelamento seguro entre o cliente e o servidor, utilizando o IP público do servidor (54.210.126.47) e a porta 1194.
+A Figura 8 mostra a execução do comando para iniciar a conexão VPN no cliente, estabelecendo o túnel seguro com o servidor.
 
 ![image](images/vpn/8-conexao-vpn-client.png)
 
@@ -294,6 +292,8 @@ A VM executa Windows 11, possui uma interface rede interna, utilizada para receb
 
 ![imagem](images/dhcp/oracle-virtualbox.png)
 
+----
+
 ### **Figura 2 – Configuração das Interfaces de Rede**
 
 A Figura 2 mostra o conteúdo do arquivo `/etc/network/interfaces`, evidenciando que:
@@ -301,6 +301,8 @@ A Figura 2 mostra o conteúdo do arquivo `/etc/network/interfaces`, evidenciando
 - A interface enp0s8 possui IP fixo 192.168.1.1, servindo como gateway da rede interna.
 
 ![imagem](images/dhcp/interfaces.png)
+
+----
 
 ### Figura 3 – Verificação das Interfaces de Rede
 
@@ -311,11 +313,15 @@ A Figura 3 demonstra a execução do comando `ip a` na VM DebianSrv, mostrando q
 
 ![imagem](images/dhcp/ip-a.png)
 
+----
+
 ### Figura 4 – Definição da Interface do DHCP
 
 A Figura 4 mostra o arquivo `/etc/default/isc-dhcp-server`, onde a interface de atendimento do DHCP foi configurada como enp0s8.
 
 ![imagem](images/dhcp/default-isc-dhcp-server.png)
+
+----
 
 ### Figura 5 – Configuração do Escopo DHCP
 
@@ -328,11 +334,15 @@ A Figura 5 exibe o conteúdo do arquivo /etc/dhcp/dhcpd.config, incluindo:
 
 ![imagem](images/dhcp/dhcpd-config.png)
 
+----
+
 ### Figura 6 – Reinicialização e Status do Serviço DHCP
 
 A Figura 6 demonstra a execução dos comandos para reiniciar e verificar o status do isc-dhcp-server, confirmando que o serviço está ativo e funcionando corretamente.
 
 ![imagem](images/dhcp/status-dhcp.png)
+
+----
 
 ### Figura 7 – Cliente Recebendo Endereço IP
 
@@ -341,6 +351,8 @@ A Figura 7 apresenta uma segunda VM com Windows 11 conectada à rede interna da 
 O cliente recebeu automaticamente um endereço IP dentro da faixa definida no escopo DHCP (192.168.1.51 - 192.168.1.100), confirmando que o servidor DHCP está ativo e funcionando corretamente.
 
 ![imagem](images/dhcp/win-dhcp.png)
+
+----
 
 ## 5. Servidor web e banco de dados
 
