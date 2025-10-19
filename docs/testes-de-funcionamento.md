@@ -36,6 +36,14 @@ Esse procedimento garante que a comunicação com o servidor seja criptografada 
 
 ![image](images/ftp/conexao%20ssh.png)
 
+### **Figura 4 – Habilitação das Regras de Segurança**
+
+Nas Figuras abaixo demosntra a habilitação do Firewall e das Regras de Segurança.
+
+![image](images/ftp/regra%20e%20habilitacao%20do%20firewall.png)
+![image](images/ftp/regras%20tcp.png)
+
+
 ---
 
 
