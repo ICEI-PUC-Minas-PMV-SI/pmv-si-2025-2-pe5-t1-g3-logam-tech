@@ -27,6 +27,16 @@ A Figura 2 mostra o Security Group configurado para a instância FTP.
 
 ![image](images/ftp/Regras%20de%20entrada.png)
 
+### **Figura 3 – Conexão via SSH com a instância EC2**
+
+A Figura 3 demonstra o processo de conexão via SSH à instância EC2 na AWS.
+Utilizou-se o Windows PowerShell e a chave privada novoftp.pem para autenticação segura do usuário ubuntu.
+Ao realizar a primeira conexão, o sistema exibe o aviso de autenticidade da chave (fingerprint), pedindo confirmação do usuário antes de prosseguir.
+Esse procedimento garante que a comunicação com o servidor seja criptografada e autenticada de forma segura.
+
+![image](images/ftp/conexao%20ssh.png)
+
+---
 
 
 ## 3. Servidor VPN (OpenVPN)
