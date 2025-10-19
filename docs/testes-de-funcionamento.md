@@ -8,7 +8,15 @@ Suas imagens aqui
 
 ## 2. Servidor FTP
 
-Suas imagens aqui
+As figuras a seguir demonstram o funcionamento do servidor FTP configurado na instância EC2 da AWS.
+Cada etapa evidencia a infraestrutura criada, as regras de segurança aplicadas e a conectividade entre o cliente (máquina local) e o servidor.
+
+### **Figura 1 – Painel da Instância EC2 da FTP na AWS**
+
+A Figura 1 apresenta a instância EC2 utilizada para hospedar o servidor FTP.
+Essa instância executa o sistema operacional Ubuntu Server 24.04 LTS, utiliza o tipo t3.micro e possui IP privado 172.31.17.229.
+
+![image](images/ftp/Resumo%20Instância.png)
 
 ----
 
