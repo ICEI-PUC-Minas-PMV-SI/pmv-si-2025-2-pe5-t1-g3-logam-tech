@@ -2,9 +2,139 @@
 
 ## 1. Active Directory (AD), DNS e GPO
 
-Suas imagens aqui
+As figuras a seguir ilustram o funcionamento dos principais serviços configurados no ambiente: Active Directory (AD), DNS e GPO.
 
----
+Cada etapa demonstra a infraestrutura implantada nas instâncias EC2 da AWS, as regras de segurança aplicadas, bem como a integração e conectividade entre o Controlador de Domínio e o servidor Windows.
+
+### **Figura 1 – Painel da Instância EC2 do DNS na AWS**
+
+A figura 1 apresenta a instância EC2 utilizada para hospedar o servidor DNS.
+
+Essa instância executa o sistema operacional Ubuntu Server 24.04 LTS, utilizando o tipo t3.micro, com IP privado 10.0.1.162. Além disso, possui um Elastic IP, garantindo endereço público fixo mesmo após reinicializações.
+
+Na instância, foram instalados os serviços Samba 4, Kerberos, Winbind e SMBClient.
+
+![Instância AWS - 01](image.png)
+
+### **Figura 2 – Regras de Segurança do Servidor DNS (Security Group)**
+
+A Figura 2 mostra o Security Group configurado para a instância do DNS.
+
+![Instância AWS - 02](image-1.png)
+
+### **Figura 3 – Conexão via SSH com a instância EC2**
+
+A Figura 3 demonstra o processo de conexão via SSH à instância EC2 do DNS na AWS.
+
+Utilizou-se o Windows PowerShell e a chave privada Martha_Ubuntu_01.pem para autenticação segura do usuário ubuntu.
+
+![Autenticação SSH Ubuntu](image-2.png)
+
+### **Figura 4 – Instalação dos pacotes**
+
+A Figura 4 apresenta a listagem dos pacotes instalados na instância dc1-puc, responsável por hospedar o AD e o Servidor DNS.
+
+Devido à configuração prévia realizada antes da captura dos testes, os principais pacotes foram instalados utilizando o seguinte comando:
+ 
+```bash
+sudo apt install samba krb5-config winbind smbclient dnsutils ldb-tools ntp -y
+```
+![Listando pacotes](image-4.png)
+
+O comando utilizado para listar os pacotes já instalados foi:
+
+```bash
+dpkg -l | grep -E "samba|krb5|winbind|smbclient|ldb|ntp"
+```
+### **Figura 5 – Verificação do serviço Samba AD/DC**
+
+A Figura 5 apresenta o comando executado para verificar o status do serviço Samba AD/DC, confirmando que está ativo e configurado para iniciar automaticamente junto ao sistema.
+
+![alt text](image-5.png)
+
+### **Figura 6 – Exibição do nível funcional do domínio**
+
+Para a figura 6, o comando abaixo foi utilizado para exibir os níveis funcionais do domínio, garantindo que o AD foi promovido corretamente.
+
+![alt text](image-6.png)
+
+### **Figura 7 – Resolução de DNS**
+
+Na figura 7, foi realizada a consulta DNS para o domínio dc1.corp.logamtech.local, comprovando que o serviço DNS interno está resolvendo corretamente o endereço IP da instância.
+
+![alt text](image-7.png)
+
+### **Figura 8 – Teste de resolução de subdomínios FTP e Web**
+
+Para a figura 8, as consultas realizadas validam a resolução dos registros criados na zona privada do Route 53, confirmando a comunicação interna entre as instâncias.
+
+![alt text](image-9.png)
+
+### **Figura 9 – Acessando o crud do subdomínio do Servidor Web**
+
+A Figura 9 apresenta o acesso realizado ao CRUD hospedado no subdomínio web-server.corp.logamtech.local, por meio do navegador Firefox instalado no cliente já ingressado no domínio.
+
+![alt text](<WhatsApp Image 2025-10-17 at 22.58.27_37fb9eb2.jpg>)
+
+### **Figura 10 - Teste de autenticação Kerberos com o administrador**
+
+Na figura 10, o comando kinit foi executado para obter o ticket Kerberos do administrador do domínio.
+
+![alt text](image-10.png)
+
+### **Figura 11 – Listagem do ticket Kerberos ativo**
+
+A figura 11 apresenta como o comando klist foi utilizado para verificar os detalhes do ticket obtido.
+
+![alt text](image-11.png)
+
+### **Figura 12 – Listagem de usuários criados no domínio**
+
+Para a figura 12, o comando a seguir lista todos os usuários criados no domínio CORP.LOGAMTECH.LOCAL, demonstrando o correto funcionamento do serviço LDAP.
+
+![alt text](image-12.png)
+
+### **Figura 13 – Verificação de grupos criados no domínio**
+
+A Figura 13 apresenta o resultado do comando utilizado para listar os grupos do domínio, incluindo Users_Logam e Administradores_Logam.
+
+![alt text](image-13.png)
+
+### **Figura 14 – Autenticação Kerberos com usuário comum**
+
+Na figura 14, foi testada a autenticação para o usuário caroline@corp.logamtech.local, garantindo que a emissão de tickets também ocorra para contas de usuários padrão.
+
+![alt text](image-14.png)
+
+### **Figura 15 – Ingresso do cliente EC2 Linux no domínio**
+
+Para a figura 15, o comando realm list confirmou que a instância cliente foi corretamente associada ao domínio corp.logamtech.local.
+
+![alt text](image-15.png)
+
+### **Figura 16 – Validação de autenticação de usuário no cliente**
+
+Na figura 16, com o domínio vinculado, o comando id exibe os grupos e o UID do usuário autenticado, mostrando a integração entre o AD e o cliente Linux.
+
+![alt text](image-16.png)
+
+### **Figura 17 – Teste de comunicação entre cliente e DC**
+
+A figura 17 apresenta a execução do comando ping do cliente para o controlador de domínio, validando a comunicação de rede e a resposta ICMP.
+
+![alt text](image-17.png)
+
+### **Figura 18 – Ingresso da instância Windows Server (win-server-gpo) no domínio**
+
+A Figura 18 mostra o resultado do comando systeminfo, comprovando que o servidor Windows foi adicionado corretamente ao domínio corp.logamtech.local.
+
+![alt text](image-18.png)
+
+### **Figura 19 – Verificação da GPO aplicada no domínio**
+
+Por fim, a Figura 19 mostra a validação da política criada (Bloquear Troca de Papel de Parede), confirmando a replicação e aplicação da GPO no domínio.
+
+![alt text](image-20.png)
 
 ## 2. Servidor FTP
 
