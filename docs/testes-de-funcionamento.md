@@ -17,6 +17,7 @@ A Figura 1 apresenta a instância EC2 utilizada para hospedar o servidor FTP.
 Essa instância executa o sistema operacional Ubuntu Server 24.04 LTS, utiliza o tipo t3.micro e possui IP privado 172.31.17.229.
 
 ![image](images/ftp/Resumo%20Instância.png)
+![image](images/ftp/Detalhe%20instancia.png)
 
 ----
 
