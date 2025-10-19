@@ -445,10 +445,9 @@ sudo service vsftpd status
 - **Portas 20-21**: `0.0.0.0/0` (Custom TCP)
 - **Portas 12000-12100**: `0.0.0.0/0` (Custom TCP)
 
-
 ----
 
-### 📁 Servidor VPN (OpenVPN) - Alice Abreu dos Reis
+#### 📁 - Servidor VPN (OpenVPN) - Alice Abreu dos Reis
 
 #### Configuração do Servidor
 
