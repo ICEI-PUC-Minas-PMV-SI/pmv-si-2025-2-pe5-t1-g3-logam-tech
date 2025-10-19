@@ -16,7 +16,7 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | [Nome do Membro] | Servidor FTP | - | - | - | - |
 | Martha Beatriz Siqueira da Silva | AD com DNS e GPO | `52.23.39.125` |  `10.0.1.162 ` | N/A | O AD centraliza a autenticação e o gerenciamento de usuários, grupos e computadores, enquanto o DNS garante a resolução de nomes e as GPOs aplicam políticas. |
 | Alice | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
-| [Nome do Membro] | Servidor DHCP | VPN | - | - | - | - |
+| Omar | Servidor DHCP | - | 192.168.1.1 | N/A | Configuração de servidor DHCP responsável por distribuir endereços IP automaticamente aos dispositivos da rede local. |
 
 ## Detalhamento das Implementações
 
@@ -477,9 +477,74 @@ ping 172.31.17.170
 
 ### 📁 Servidor DHCP - Omar Abreu
 
-Coloque aqui as configs
+#### Configuração do Servidor
 
-----
+##### 1. Criação da Máquina Virtual
+
+- Nome: `DebianSrv`  
+- Virtualizador: Oracle VM VirtualBox  
+- Sistema operacional: Debian 13  
+- Memória RAM: 1 GB  
+- Armazenamento: 10 GB  
+- Interfaces de rede:  
+  - **enp0s3**: modo *NAT*, usada para acesso à internet.  
+  - **enp0s8**: modo *rede interna*, utilizada para fornecer endereços IP aos clientes.
+  
+##### 2. Configuração das Interfaces de Rede
+
+Arquivo: `/etc/network/interfaces`
+
+```bash
+# Interface conectada à rede externa (internet), recebe IP automaticamente via DHCP
+auto enp0s3
+iface enp0s3 inet dhcp
+
+# Interface conectada à rede interna, usada como servidor DHCP, possui IP fixo
+auto enp0s8
+iface enp0s8 inet static
+  address 192.168.1.1
+  netmask 255.255.255.0
+  dns-nameservers 8.8.8.8 1.1.1.1
+```
+Após salvar, reiniciar a rede:
+```bash
+sudo systemctl restart networking
+```
+##### 3. Instalação do Servidor DHCP
+```bash
+# atualizar pacotes
+sudo apt update -y && sudo apt upgrade -y
+
+# Instalar dhcp-server
+sudo apt install isc-dhcp-server -y
+```
+##### 4. Definição da Interface do DHCP
+
+Arquivo: `/etc/default/isc-dhcp-server`
+```bash
+# atualizar pacotes
+INTERFACESv4="enp0s8"
+```
+
+##### 5. Configuração do Escopo DHCP
+
+Arquivo: `/etc/dhcp/dhcpd.config`
+```bash
+subnet 192.168.1.0 netmask 255.255.255.0 {
+  range 192.168.1.51 192.168.1.100;
+  option routers 192.168.1.1;
+  option domain-name-servers 8.8.8.8, 1.1.1.1;
+  option domain-name "exemple.org";
+}
+```
+##### 6. Reinicialização e Teste do Serviço
+
+```bash
+sudo systemctl restart isc-dhcp-server
+sudo systemctl enable isc-dhcp-server
+sudo systemctl status isc-dhcp-server
+```
+Um cliente conectado na mesma rede interna obteve automaticamente um endereço IP dentro da faixa 192.168.1.51 - 192.168.1.100, confirmando o funcionamento correto do serviço DHCP.
 
 ### 📁 Servidor Web + Banco de Dados - Gabriel dos Reis Nascimento
 
