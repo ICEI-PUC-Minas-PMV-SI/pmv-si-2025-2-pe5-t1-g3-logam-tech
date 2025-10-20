@@ -11,6 +11,10 @@ O LOGAM Tech é uma empresa de telemarketing e Contact Center fundada em 2021, e
 
 O projeto técnico do LOGAM Tech define a arquitetura de rede que suporta suas operações multicanal, com sistemas robustos de VOIP, CRM, ERP e infraestrutura segura para trabalho remoto/híbrido via VPN. A topologia em estrela adotada garante isolamento de falhas e facilita o gerenciamento, centralizando serviços essenciais (DHCP, FTP, HTTP e DNS) na sede do Rio de Janeiro e utilizando VLANs para segregar o tráfego entre funcionários e visitantes. A visão da empresa é se tornar a maior referência nacional em orientação para cursos de tecnologia até 2030, com expansão global planejada.
 
+---
+
+<img width="200" height="200" alt="logam_tech_logo" src="https://github.com/user-attachments/assets/2614c369-39ad-4bd3-94fc-ac1440df619c" />
+
 ## Integrantes
 
 * Alice Abreu dos Reis
