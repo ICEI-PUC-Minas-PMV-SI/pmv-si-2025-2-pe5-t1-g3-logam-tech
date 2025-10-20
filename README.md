@@ -25,5 +25,5 @@ O projeto técnico do LOGAM Tech define a arquitetura de rede que suporta suas o
 
 ## Orientador
 
-* Fabio Leandro Rodrigues
+* Fábio Leandro Rodrigues
 
