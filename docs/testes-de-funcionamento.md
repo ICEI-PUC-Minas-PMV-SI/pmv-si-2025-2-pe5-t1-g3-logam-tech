@@ -258,7 +258,7 @@ A Figura 2 mostra o Security Group configurado para a instância VPN.
 
 ### **Figura 3 – Conexão via SSH com a instância EC2**
 
-A Figura  mostra a conexão SSH sendo estabelecida com a instância EC2.
+A Figura 3 mostra a conexão SSH sendo estabelecida com a instância EC2.
 
 ![image](images/vpn/3-ssh-ec2.png)
 
@@ -399,8 +399,6 @@ O cliente recebeu automaticamente um endereço IP dentro da faixa definida no es
 As figuras a seguir demonstram o funcionamento do ambiente de servidor web e banco de dados configurado na AWS.  
 Cada etapa evidencia um componente da arquitetura e comprova o correto funcionamento dos serviços,  
 desde a infraestrutura e segurança até os testes de integração entre API e banco de dados.
-
----
 
 ### **Figura 1 – Painel da Instância EC2 na AWS com o Elastic IP associado e Security Group configurado**
 
