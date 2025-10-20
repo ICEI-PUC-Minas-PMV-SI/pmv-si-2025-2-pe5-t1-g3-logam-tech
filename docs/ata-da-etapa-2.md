@@ -13,10 +13,10 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | Membro | Serviço | IP Público | IP Privado | Usuário de acesso | Função |
 |--------|---------|------------|------------|----------|-----------|
 | Gabriel dos Reis Nascimento | Servidor Web + Banco de Dados | `54.145.137.231` | `172.31.16.36` | N/A | Configuração de servidor web com banco de dados para realizar um CRUD simples. |
-| Leandro Augusto Santos Araujo | Servidor FTP | 18.206.176.203 | 172.31.17.229 | N/A | A configuração FTP para transferir arquivos entre um computador e um servidor em uma rede. |
+| Leandro Augusto Santos Araujo | Servidor FTP | `18.206.176.203` | `172.31.17.229` | N/A | A configuração FTP para transferir arquivos entre um computador e um servidor em uma rede. |
 | Martha Beatriz Siqueira da Silva | AD com DNS e GPO | `52.23.39.125` |  `10.0.1.162 ` | N/A | O AD centraliza a autenticação e o gerenciamento de usuários, grupos e computadores, enquanto o DNS garante a resolução de nomes e as GPOs aplicam políticas. |
 | Alice Abreu dos Rei | VPN |`54.89.217.224`- | `172.31.17.170` | N/A | Estabelecimento de conexões seguras entre colaboradores e rede corporativa. |
-| Omar | Servidor DHCP | - | 192.168.1.1 | N/A | Configuração de servidor DHCP responsável por distribuir endereços IP automaticamente aos dispositivos da rede local. |
+| Omar | Servidor DHCP | - | `192.168.1.1` | N/A | Configuração de servidor DHCP responsável por distribuir endereços IP automaticamente aos dispositivos da rede local. |
 
 ## Detalhamento das Implementações
 
@@ -49,6 +49,8 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | SSH               | TCP       | 22                | 0.0.0.0/0   | Acesso remoto                        |
 | ICMP              | ICMP      | Tudo              | 10.0.0.0/16 | Ping e diagnóstico interno           |
 
+---
+
 ##### **Saída**
 
 | Tipo                | Destino     | Descrição                                    |
@@ -64,12 +66,15 @@ Implementar uma infraestrutura completa com múltiplos serviços essenciais para
 | SSH  | TCP       | 22    | 0.0.0.0/0          | Acesso remoto (Linux)                                 |
 | RDP  | TCP       | 3389  | [ IP Público do ADM ] | Acesso remoto (Windows) via IP fixo |
 
+---
+
 ##### **Saída**
 
 | Tipo                | Destino     | Descrição                                 |
 | ------------------- | ----------- | ----------------------------------------- |
 | Todos os protocolos | `0.0.0.0/0` | Comunicação livre |
 
+---
 
 #### 2. Configuração DNS — Route 53 (Zona Privada)
 
@@ -98,8 +103,6 @@ Elastic IP: 52.23.39.125
 Instância: dc1-puc
 ```
 
----
-
 #### 4 Configuração do Servidor AD/DC
 
 ##### 4.1. Acesso à instância
@@ -127,8 +130,6 @@ Realm: CORP.LOGAMTECH.LOCAL
 KDC: dc1.corp.logamtech.local
 Admin Server: dc1.corp.logamtech.local
 ```
-
----
 
 #### 5. Provisionamento do Samba AD/DC
 
@@ -175,8 +176,6 @@ search corp.logamtech.local
 ```bash
 hostnamectl set-hostname dc1
 ```
-
----
 
 #### 6. Configurar e Validar o Kerberos
 
@@ -319,8 +318,6 @@ kinit martha@CORP.LOGAMTECH.LOCAL
 klist
 ```
 
----
-
 #### 9. Validar Ingresso de EC2 no Domínio
 
 ##### 9.1 Criar a Instância EC2 do cliente
@@ -392,9 +389,9 @@ realm list
 id martha@corp.logamtech.local
 getent passwd martha@corp.logamtech.local
 ```
-## 10. Criar a Instância EC2 para Gerenciamento de GPOs
+#### 10. Criar a Instância EC2 para Gerenciamento de GPOs
 
-### **Descrição**
+##### **Descrição**
 
 A criação da instância **Windows Server** teve como objetivo possibilitar a configuração e o gerenciamento de **Políticas de Grupo (GPOs)**, visto que essas funcionalidades não estão disponíveis nativamente no ambiente Linux.
 
@@ -407,9 +404,7 @@ Assim, o Windows será utilizado como ferramenta complementar.
 | **Tipo de Instância**   | `t3.large`                         |
 | **Security Group**      | `group-sg-client`                  |
 
----
-
-### 10.1. Elastic IP
+##### 10.1. Elastic IP
 
 **Objetivo:** Garantir que o servidor Windows mantenha um IP público fixo, permitindo o acesso remoto via RDP e o gerenciamento contínuo do domínio.
 
@@ -418,9 +413,7 @@ Elastic IP: 52.202.113.69
 Instância: win-server-gpo
 ```
 
----
-
-### 10.2. Acessar à Instância via RDP
+##### 10.2. Acessar à Instância via RDP
 
 Após a criação e inicialização da instância:
 
@@ -435,9 +428,7 @@ Senha: [senha obtida via AWS]
 
 Conecte-se ao servidor utilizando o **Elastic IP** informado anteriormente.
 
----
-
-### 10.3. Configurar Placa de Rede (IP Fixo e DNS)
+##### 10.3. Configurar Placa de Rede (IP Fixo e DNS)
 
 **Descrição:**
 Foi configurado um IP fixo na interface de rede do Windows Server, garantindo comunicação direta e estável com o **DC Samba/AD** hospedado no Linux.
@@ -463,37 +454,31 @@ Foi configurado um IP fixo na interface de rede do Windows Server, garantindo co
 
 Após aplicar as configurações, a sessão RDP será temporariamente interrompida (comportamento esperado até a rede ser restabelecida).
 
----
-
-### 10.4. Validar comunicação com o DC
+##### 10.4. Validar comunicação com o DC
 
 Após reconectar via RDP, valide a comunicação entre o **Windows Server (`win-server-gpo`)** e o **DC Linux (`dc1-puc`)**:
 
-#### **Validar resolução de nomes via DNS**
+##### **Validar resolução de nomes via DNS**
 
 ```bash
 nslookup corp.logamtech.local
 ```
 
-#### **Validar conectividade com o DC**
+##### **Validar conectividade com o DC**
 
 ```bash
 ping dc1.corp.logamtech.local
 ```
 
----
+#### 11. Ingressar o Windows Server no Domínio Samba/AD
 
-## 11. Ingressar o Windows Server no Domínio Samba/AD
-
-### **Descrição**
+##### **Descrição**
 
 O servidor `win-server-gpo` foi ingressado no domínio **corp.logamtech.local**, cujo controlador principal é o servidor **Linux com Samba4**.
 
 Essa integração permite administrar o AD e aplicar **Políticas de Grupo (GPOs)** a partir do ambiente Windows, mantendo o domínio hospedado no Linux.
 
----
-
-### 11.1. Acessar configurações de Domínio
+##### 11.1. Acessar configurações de Domínio
 
 1. Pressione `Win + R` e execute:
 
@@ -511,9 +496,7 @@ Essa integração permite administrar o AD e aplicar **Políticas de Grupo (GPOs
      ```
    * Clique em **OK**
 
----
-
-### 11.2. Inserir Credenciais do Domínio
+##### 11.2. Inserir Credenciais do Domínio
 
 Informe as credenciais do administrador do domínio Samba:
 
@@ -522,9 +505,7 @@ Username: administrator@CORP.LOGAMTECH.LOCAL
 Password: [senha definida durante o provisionamento]
 ```
 
----
-
-### 11.3. Resultado esperado
+##### 11.3. Resultado esperado
 
 Se a autenticação for bem-sucedida, será exibida a mensagem:
 
@@ -534,9 +515,8 @@ Welcome to the corp.logamtech.local domain
 
 Após confirmar, o sistema solicitará a **reinicialização**.
 
----
 
-### 11.4. Reiniciar e fazer login no domínio
+##### 11.4. Reiniciar e fazer login no domínio
 
 Após o reboot, na tela de login selecione **Other user** e entre com:
 
@@ -546,9 +526,7 @@ CORP\Administrator
 
 O servidor agora estará **membro do domínio Samba/AD**.
 
----
-
-### 11.5. Verificar Ingresso no Domínio
+##### 11.5. Verificar Ingresso no Domínio
 
 Execute no Prompt de Comando (com o Admin):
 
@@ -562,9 +540,7 @@ systeminfo | findstr /B /C:"Domain"
 Domain: corp.logamtech.local
 ```
 
----
-
-### 11.7. Testar Autenticação Kerberos
+##### 11.7. Testar Autenticação Kerberos
 
 Confirme a autenticação via Kerberos:
 
@@ -574,14 +550,13 @@ klist
 
 Se houver um ticket válido, o domínio está autenticando corretamente.
 
+#### 12. Instalar Ferramentas de Administração de GPO (RSAT)
 
-## 12. Instalar Ferramentas de Administração de GPO (RSAT)
-
-### 12.1. Instalar via PowerShell o RSAT e GPMC
+##### 12.1. Instalar via PowerShell o RSAT e GPMC
 ```bash
 Install-WindowsFeature -Name RSAT-AD-Tools, RSAT-AD-PowerShell, RSAT-DNS-Server, GPMC
 ```
-### 12.2. Verificar Instalação
+##### 12.2. Verificar Instalação
 
 Execute no campo de pesquisa ou via `Run (Win + R)`:
 
@@ -596,28 +571,27 @@ dsa.msc
 dnsmgmt.msc
 ```
 
-## 13. Criação e Gerenciamento de GPOs (Group Policy Objects)
+#### 13. Criação e Gerenciamento de GPOs (Group Policy Objects)
 
-
-### 13.1. Criar GPO — "Bloquear Troca de Papel de Parede"
+##### 13.1. Criar GPO — "Bloquear Troca de Papel de Parede"
 
 **Objetivo:** Impedir que usuários alterem o plano de fundo do desktop definindo um papel de parede fixo para toda a organização.
 
-### 13.1.1. Criar a GPO
+###### 13.1.1. Criar a GPO
 
 ```powershell
 New-GPO -Name "Bloquear Troca de Papel de Parede" -Comment "Impede alteração do plano de fundo do desktop"
 ```
 
-### 13.1.2. Vincular ao domínio
+###### 13.1.2. Vincular ao domínio
 
 ```powershell
 New-GPLink -Name "Bloquear Troca de Papel de Parede" -Target "DC=corp,DC=logamtech,DC=local"
 ```
 
-### 13.1.3. Definir chaves de registro
+##### 13.1.3. Definir chaves de registro
 
-#### 1. Bloquear alteração de wallpaper
+##### 1. Bloquear alteração de wallpaper
 
 ```powershell
 Set-GPRegistryValue -Name "Bloquear Troca de Papel de Parede" `
@@ -625,7 +599,7 @@ Set-GPRegistryValue -Name "Bloquear Troca de Papel de Parede" `
 -ValueName "NoChangingWallPaper" -Type DWord -Value 1
 ```
 
-#### 2. Definir imagem padrão e estilo de exibição
+##### 2. Definir imagem padrão e estilo de exibição
 
 ```powershell
 Set-GPRegistryValue -Name "Bloquear Troca de Papel de Parede" `
@@ -637,24 +611,24 @@ Set-GPRegistryValue -Name "Bloquear Troca de Papel de Parede" `
 -ValueName "WallpaperStyle" -Type String -Value "2"
 ```
 
-### 13.1.4. Atualizar a GPO
+##### 13.1.4. Atualizar a GPO
 
 ```powershell
 gpupdate /force
 ```
 
-
-## 13.2. Validar políticas aplicadas
+##### 13.2. Validar políticas aplicadas
 
 Após a criação da GPO, foi validada a aplicação das políticas no domínio.
 
-### Comando de verificação
+##### Comando de verificação
 
 ```powershell
 Get-GPO -All
 ```
 Lista todas as GPOs criadas no domínio.
 
+---
 
 ### 📁 Servidor FTP - Leandro
 
@@ -700,6 +674,7 @@ sudo service vsftpd status
 +- **Portas 20-21**: `0.0.0.0/0` (Custom TCP)
 +- **Portas 12000-12100**: `0.0.0.0/0` (Custom TCP)
 ```
+
 ----
 
 ### 📁  Servidor VPN (OpenVPN) - Alice Abreu dos Reis
