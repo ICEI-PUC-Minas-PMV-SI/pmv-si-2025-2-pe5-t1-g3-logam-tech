@@ -1,9 +1,9 @@
-## Membros do Grupo e Responsabilidades
+# Membros do Grupo e Responsabilidades
 
 | Membro | Responsabilidade |
 |--------|---------|
 | Alice Abreu dos Reis | Minhas responsabilidades foram configurar o serviço de VPN para o projeto. Criei um rascunho com as principais informações, organizei o documento, tirei prints durante o processo de configuração e descrevi as imagens para deixar clara a correspondência de cada uma. Também gravei um vídeo com o passo a passo da configuração da VPN. Estruturei e organizei o documento no Overleaf de forma geral, para facilitar o preenchimento de todas as configurações. Depois que todos contribuíram, revisei e ajustei as imagens, textos e tabelas de maneira geral. Além disso, subi as configurações da VPN no GitHub, junto com os prints do passo a passo e os textos explicando a função de cada etapa. Também revisei e ajustei textos e imagens nas pastas do GitHub, mantendo a organização geral do projeto.    |
-| Gabriel dos Reis Nascimento | - |
+| Gabriel dos Reis Nascimento | Minhas responsabilidades foram configurar o servidor web com banco de dados para realizar um CRUD simples. Desenvolvi uma aplicação Node.js completa com API REST usando Express e PostgreSQL, incluindo operações CRUD para usuários e produtos. Configurei a infraestrutura na AWS com EC2 (Ubuntu 24.04 LTS) e RDS PostgreSQL, implementando Security Groups adequados para segurança. Containerizei a aplicação com Docker e configurei o Nginx como proxy reverso para servir arquivos estáticos e rotear requisições da API. Criei scripts de automação para instalação e configuração, incluindo Makefile com comandos úteis para gerenciamento. Implementei interface web para testes e realizei testes completos da API usando curl e Postman, validando a integração entre frontend, backend e banco de dados. Documentei todo o processo de configuração e testes com prints demonstrando o funcionamento correto do sistema. |
 | Leandro Augusto Santos Araujo | - |
 | Martha Beatriz Siqueira da Silva | - |
 | Omar | -|
