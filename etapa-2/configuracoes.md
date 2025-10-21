@@ -1,4 +1,4 @@
-# Ata de Configuração - Etapa 2
+# Configurações - Etapa 2
 
 ## Resumo do Projeto
 
