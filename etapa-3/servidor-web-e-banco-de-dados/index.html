@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LOGAM Tech - Sistema de Gestão</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+        padding: 30px;
+        text-align: center;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      .header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+      }
+
+      .tabs {
+        display: flex;
+        background: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .tab {
+        flex: 1;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        background: none;
+        border: none;
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: #6c757d;
+        transition: all 0.3s ease;
+      }
+
+      .tab.active {
+        background: white;
+        color: #4facfe;
+        border-bottom: 3px solid #4facfe;
+      }
+
+      .tab:hover {
+        background: #e9ecef;
+      }
+
+      .content {
+        padding: 30px;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h3 {
+        color: #333;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        border-bottom: 2px solid #4facfe;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #555;
+      }
+
+      .form-group input,
+      .form-group textarea,
+      .form-group select {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease;
+      }
+
+      .form-group select {
+        background-color: white;
+        cursor: pointer;
+      }
+
+      .form-group input:focus,
+      .form-group textarea:focus,
+      .form-group select:focus {
+        outline: none;
+        border-color: #4facfe;
+      }
+
+      .form-group textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-right: 10px;
+        margin-bottom: 10px;
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        color: white;
+      }
+
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+      }
+
+      .btn-success {
+        background: linear-gradient(135deg, #56ab2f 0%, #a8e6cf 100%);
+        color: white;
+      }
+
+      .btn-success:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(86, 171, 47, 0.4);
+      }
+
+      .btn-warning {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+      }
+
+      .btn-warning:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #ff416c 0%, #ff4b2b 100%);
+        color: white;
+      }
+
+      .btn-danger:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
+      }
+
+      .btn-secondary {
+        background: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background: #5a6268;
+      }
+
+      .table-container {
+        overflow-x: auto;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+      }
+
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      tr:hover {
+        background: #f8f9fa;
+      }
+
+      .status-indicator {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+
+      .status-online {
+        background: #28a745;
+      }
+
+      .status-offline {
+        background: #dc3545;
+      }
+
+      .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        font-weight: 500;
+      }
+
+      .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+      }
+
+      .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 20px;
+        color: #6c757d;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+      }
+
+      .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 20px;
+        opacity: 0.5;
+      }
+
+      .form-row {
+        display: flex;
+        gap: 20px;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+      }
+
+      @media (max-width: 768px) {
+        .form-row {
+          flex-direction: column;
+        }
+
+        .tabs {
+          flex-direction: column;
+        }
+
+        .tab {
+          border-bottom: 1px solid #dee2e6;
+        }
+
+        .header h1 {
+          font-size: 2rem;
+        }
+
+        .content {
+          padding: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>🏢 LOGAM Tech</h1>
+        <p>Telemarketing e Contact Center - Gestão de Agentes e Cursos</p>
+      </div>
+
+      <div class="tabs">
+        <button class="tab active" onclick="switchTab('agents')">
+          👥 Agentes
+        </button>
+        <button class="tab" onclick="switchTab('courses')">📚 Cursos</button>
+      </div>
+
+      <div class="content">
+        <!-- Agents Tab -->
+        <div id="agents" class="tab-content active">
+          <div class="section">
+            <h3>Adicionar Novo Agente</h3>
+            <form id="agentForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="agentName">Nome *</label>
+                  <input type="text" id="agentName" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="agentEmail">Email *</label>
+                  <input type="email" id="agentEmail" name="email" required />
+                </div>
+                <div class="form-group">
+                  <label for="agentPhone">Telefone</label>
+                  <input
+                    type="text"
+                    id="agentPhone"
+                    name="phone"
+                    placeholder="(00) 00000-0000"
+                  />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="agentDepartment">Departamento *</label>
+                  <select id="agentDepartment" name="department" required>
+                    <option value="">Selecione...</option>
+                    <option value="vendas">Vendas</option>
+                    <option value="suporte">Suporte</option>
+                    <option value="cobranca">Cobrança</option>
+                    <option value="orientacao">Orientação</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="agentLocation">Localização *</label>
+                  <select id="agentLocation" name="location" required>
+                    <option value="">Selecione...</option>
+                    <option value="RJ">Rio de Janeiro</option>
+                    <option value="Brasília">Brasília</option>
+                    <option value="Curitiba">Curitiba</option>
+                    <option value="Salvador">Salvador</option>
+                    <option value="Belém">Belém</option>
+                    <option value="Remoto">Remoto</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="agentStatus">Status *</label>
+                  <select id="agentStatus" name="status" required>
+                    <option value="ativo">Ativo</option>
+                    <option value="inativo">Inativo</option>
+                  </select>
+                </div>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Adicionar Agente
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="clearAgentForm()"
+              >
+                Limpar
+              </button>
+            </form>
+          </div>
+
+          <div class="section">
+            <h3>Lista de Agentes</h3>
+            <div id="agentAlert"></div>
+            <div id="agentTableContainer" class="table-container">
+              <div class="loading">Carregando agentes...</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Courses Tab -->
+        <div id="courses" class="tab-content">
+          <div class="section">
+            <h3>Adicionar Novo Curso</h3>
+            <form id="courseForm">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="courseName">Nome do Curso *</label>
+                  <input type="text" id="courseName" name="name" required />
+                </div>
+                <div class="form-group">
+                  <label for="coursePrice">Preço *</label>
+                  <input
+                    type="number"
+                    id="coursePrice"
+                    name="price"
+                    step="0.01"
+                    min="0"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label for="coursePartner">Parceiro</label>
+                  <select id="coursePartner" name="partner">
+                    <option value="">Selecione...</option>
+                    <option value="Alura">Alura</option>
+                    <option value="Rocketseat">Rocketseat</option>
+                    <option value="Outro">Outro</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="courseCategory">Categoria *</label>
+                  <select id="courseCategory" name="category" required>
+                    <option value="">Selecione...</option>
+                    <option value="B2B">B2B (Business to Business)</option>
+                    <option value="B2C">B2C (Business to Consumer)</option>
+                    <option value="B2G">B2G (Business to Government)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="courseDescription">Descrição</label>
+                <textarea
+                  id="courseDescription"
+                  name="description"
+                  placeholder="Descreva o curso..."
+                ></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary">
+                Adicionar Curso
+              </button>
+              <button
+                type="button"
+                class="btn btn-secondary"
+                onclick="clearCourseForm()"
+              >
+                Limpar
+              </button>
+            </form>
+          </div>
+
+          <div class="section">
+            <h3>Lista de Cursos</h3>
+            <div id="courseAlert"></div>
+            <div id="courseTableContainer" class="table-container">
+              <div class="loading">Carregando cursos...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Configuration
+      const API_BASE_URL = window.location.origin; // Will work with nginx proxy
+
+      // Global state
+      let currentEditingAgent = null;
+      let currentEditingCourse = null;
+
+      // Tab switching
+      function switchTab(tabName) {
+        // Hide all tab contents
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Remove active class from all tabs
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        // Show selected tab content
+        document.getElementById(tabName).classList.add("active");
+
+        // Add active class to clicked tab
+        event.target.classList.add("active");
+
+        // Load data for the selected tab
+        if (tabName === "agents") {
+          loadAgents();
+        } else if (tabName === "courses") {
+          loadCourses();
+        }
+      }
+
+      // Utility functions
+      function showAlert(containerId, message, type = "success") {
+        const container = document.getElementById(containerId);
+        container.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+        setTimeout(() => {
+          container.innerHTML = "";
+        }, 5000);
+      }
+
+      function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString("pt-BR", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        }).format(amount);
+      }
+
+      // Agent functions
+      async function loadAgents() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/agents`);
+          const data = await response.json();
+
+          const container = document.getElementById("agentTableContainer");
+
+          if (!data.success || !data.data || data.data.length === 0) {
+            container.innerHTML = `
+                        <div class="empty-state">
+                            <div>👥</div>
+                            <h3>Nenhum agente encontrado</h3>
+                            <p>Adicione seu primeiro agente para começar!</p>
+                        </div>
+                    `;
+            return;
+          }
+
+          const agents = data.data;
+          container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Telefone</th>
+                                <th>Departamento</th>
+                                <th>Localização</th>
+                                <th>Status</th>
+                                <th>Criado em</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${agents
+                              .map(
+                                (agent) => `
+                                <tr>
+                                    <td>${agent.id}</td>
+                                    <td>${agent.name}</td>
+                                    <td>${agent.email}</td>
+                                    <td>${agent.phone || "N/A"}</td>
+                                    <td>${agent.department || "N/A"}</td>
+                                    <td>${agent.location || "N/A"}</td>
+                                    <td><span class="status-indicator status-${
+                                      agent.status === "ativo"
+                                        ? "online"
+                                        : "offline"
+                                    }"></span>${agent.status}</td>
+                                    <td>${formatDate(agent.created_at)}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="editAgent(${
+                                          agent.id
+                                        })">Editar</button>
+                                        <button class="btn btn-danger" onclick="deleteAgent(${
+                                          agent.id
+                                        })">Excluir</button>
+                                    </td>
+                                </tr>
+                            `
+                              )
+                              .join("")}
+                        </tbody>
+                    </table>
+                `;
+        } catch (error) {
+          console.error("Error loading agents:", error);
+          showAlert(
+            "agentAlert",
+            "Erro ao carregar agentes: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function createAgent(agentData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/agents`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(agentData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("agentAlert", "Agente criado com sucesso!", "success");
+            clearAgentForm();
+            loadAgents();
+          } else {
+            throw new Error(data.message || "Falha ao criar agente");
+          }
+        } catch (error) {
+          console.error("Error creating agent:", error);
+          showAlert(
+            "agentAlert",
+            "Erro ao criar agente: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function updateAgent(id, agentData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/agents/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(agentData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert(
+              "agentAlert",
+              "Agente atualizado com sucesso!",
+              "success"
+            );
+            clearAgentForm();
+            loadAgents();
+          } else {
+            throw new Error(data.message || "Falha ao atualizar agente");
+          }
+        } catch (error) {
+          console.error("Error updating agent:", error);
+          showAlert(
+            "agentAlert",
+            "Erro ao atualizar agente: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function deleteAgent(id) {
+        if (!confirm("Tem certeza que deseja excluir este agente?")) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/agents/${id}`, {
+            method: "DELETE",
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("agentAlert", "Agente excluído com sucesso!", "success");
+            loadAgents();
+          } else {
+            throw new Error(data.message || "Falha ao excluir agente");
+          }
+        } catch (error) {
+          console.error("Error deleting agent:", error);
+          showAlert(
+            "agentAlert",
+            "Erro ao excluir agente: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function editAgent(id) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/agents/${id}`);
+          const data = await response.json();
+
+          if (data.success) {
+            const agent = data.data;
+            document.getElementById("agentName").value = agent.name;
+            document.getElementById("agentEmail").value = agent.email;
+            document.getElementById("agentPhone").value = agent.phone || "";
+            document.getElementById("agentDepartment").value =
+              agent.department || "";
+            document.getElementById("agentLocation").value =
+              agent.location || "";
+            document.getElementById("agentStatus").value =
+              agent.status || "ativo";
+
+            currentEditingAgent = id;
+
+            // Change form button
+            const submitBtn = document.querySelector(
+              '#agentForm button[type="submit"]'
+            );
+            submitBtn.textContent = "Atualizar Agente";
+            submitBtn.className = "btn btn-success";
+          } else {
+            throw new Error(data.message || "Falha ao carregar agente");
+          }
+        } catch (error) {
+          console.error("Error loading agent:", error);
+          showAlert(
+            "agentAlert",
+            "Erro ao carregar agente: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      function clearAgentForm() {
+        document.getElementById("agentForm").reset();
+        currentEditingAgent = null;
+
+        // Reset form button
+        const submitBtn = document.querySelector(
+          '#agentForm button[type="submit"]'
+        );
+        submitBtn.textContent = "Adicionar Agente";
+        submitBtn.className = "btn btn-primary";
+      }
+
+      // Course functions
+      async function loadCourses() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/courses`);
+          const data = await response.json();
+
+          const container = document.getElementById("courseTableContainer");
+
+          if (!data.success || !data.data || data.data.length === 0) {
+            container.innerHTML = `
+                        <div class="empty-state">
+                            <div>📚</div>
+                            <h3>Nenhum curso encontrado</h3>
+                            <p>Adicione seu primeiro curso para começar!</p>
+                        </div>
+                    `;
+            return;
+          }
+
+          const courses = data.data;
+          container.innerHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nome</th>
+                                <th>Descrição</th>
+                                <th>Parceiro</th>
+                                <th>Preço</th>
+                                <th>Categoria</th>
+                                <th>Criado em</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${courses
+                              .map(
+                                (course) => `
+                                <tr>
+                                    <td>${course.id}</td>
+                                    <td>${course.name}</td>
+                                    <td>${course.description || "N/A"}</td>
+                                    <td>${course.partner || "N/A"}</td>
+                                    <td>${formatCurrency(course.price)}</td>
+                                    <td>${course.category || "N/A"}</td>
+                                    <td>${formatDate(course.created_at)}</td>
+                                    <td>
+                                        <button class="btn btn-warning" onclick="editCourse(${
+                                          course.id
+                                        })">Editar</button>
+                                        <button class="btn btn-danger" onclick="deleteCourse(${
+                                          course.id
+                                        })">Excluir</button>
+                                    </td>
+                                </tr>
+                            `
+                              )
+                              .join("")}
+                        </tbody>
+                    </table>
+                `;
+        } catch (error) {
+          console.error("Error loading courses:", error);
+          showAlert(
+            "courseAlert",
+            "Erro ao carregar cursos: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function createCourse(courseData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/courses`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(courseData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("courseAlert", "Curso criado com sucesso!", "success");
+            clearCourseForm();
+            loadCourses();
+          } else {
+            throw new Error(data.message || "Falha ao criar curso");
+          }
+        } catch (error) {
+          console.error("Error creating course:", error);
+          showAlert(
+            "courseAlert",
+            "Erro ao criar curso: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function updateCourse(id, courseData) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/courses/${id}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(courseData),
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert(
+              "courseAlert",
+              "Curso atualizado com sucesso!",
+              "success"
+            );
+            clearCourseForm();
+            loadCourses();
+          } else {
+            throw new Error(data.message || "Falha ao atualizar curso");
+          }
+        } catch (error) {
+          console.error("Error updating course:", error);
+          showAlert(
+            "courseAlert",
+            "Erro ao atualizar curso: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function deleteCourse(id) {
+        if (!confirm("Tem certeza que deseja excluir este curso?")) {
+          return;
+        }
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/courses/${id}`, {
+            method: "DELETE",
+          });
+
+          const data = await response.json();
+
+          if (data.success) {
+            showAlert("courseAlert", "Curso excluído com sucesso!", "success");
+            loadCourses();
+          } else {
+            throw new Error(data.message || "Falha ao excluir curso");
+          }
+        } catch (error) {
+          console.error("Error deleting course:", error);
+          showAlert(
+            "courseAlert",
+            "Erro ao excluir curso: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      async function editCourse(id) {
+        try {
+          const response = await fetch(`${API_BASE_URL}/api/courses/${id}`);
+          const data = await response.json();
+
+          if (data.success) {
+            const course = data.data;
+            document.getElementById("courseName").value = course.name;
+            document.getElementById("courseDescription").value =
+              course.description || "";
+            document.getElementById("coursePrice").value = course.price;
+            document.getElementById("coursePartner").value =
+              course.partner || "";
+            document.getElementById("courseCategory").value =
+              course.category || "";
+
+            currentEditingCourse = id;
+
+            // Change form button
+            const submitBtn = document.querySelector(
+              '#courseForm button[type="submit"]'
+            );
+            submitBtn.textContent = "Atualizar Curso";
+            submitBtn.className = "btn btn-success";
+          } else {
+            throw new Error(data.message || "Falha ao carregar curso");
+          }
+        } catch (error) {
+          console.error("Error loading course:", error);
+          showAlert(
+            "courseAlert",
+            "Erro ao carregar curso: " + error.message,
+            "error"
+          );
+        }
+      }
+
+      function clearCourseForm() {
+        document.getElementById("courseForm").reset();
+        currentEditingCourse = null;
+
+        // Reset form button
+        const submitBtn = document.querySelector(
+          '#courseForm button[type="submit"]'
+        );
+        submitBtn.textContent = "Adicionar Curso";
+        submitBtn.className = "btn btn-primary";
+      }
+
+      // Event listeners
+      document
+        .getElementById("agentForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const agentData = {
+            name: formData.get("name"),
+            email: formData.get("email"),
+            phone: formData.get("phone"),
+            department: formData.get("department"),
+            location: formData.get("location"),
+            status: formData.get("status"),
+          };
+
+          if (currentEditingAgent) {
+            await updateAgent(currentEditingAgent, agentData);
+          } else {
+            await createAgent(agentData);
+          }
+        });
+
+      document
+        .getElementById("courseForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+
+          const formData = new FormData(e.target);
+          const courseData = {
+            name: formData.get("name"),
+            description: formData.get("description"),
+            price: parseFloat(formData.get("price")),
+            partner: formData.get("partner") || null,
+            category: formData.get("category"),
+          };
+
+          if (currentEditingCourse) {
+            await updateCourse(currentEditingCourse, courseData);
+          } else {
+            await createCourse(courseData);
+          }
+        });
+
+      // Initialize the app
+      document.addEventListener("DOMContentLoaded", () => {
+        loadAgents();
+      });
+    </script>
+  </body>
+</html>
