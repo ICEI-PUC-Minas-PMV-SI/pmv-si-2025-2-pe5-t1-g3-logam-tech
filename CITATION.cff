@@ -1,29 +1,26 @@
 cff-version: 1.0.1
 message: Please cite this software using these metadata.
-title:
+title: LOGAM Tech
 authors:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - family-names:
-    given-names:
-  - name-suffix: Professor XXXX
+  - family-names: Abreu dos Reis
+    given-names: Alice
+  - family-names: dos Reis Nascimento
+    given-names: Gabriel
+  - family-names: Augusto
+    given-names: Leandro
+  - family-names: Beatriz Siqueira da Silva
+    given-names: Martha
+  - family-names: Petronílio Martins de Abreu
+    given-names: Omar
+  - name-suffix: Professor
     affiliation: PUC Minas
-    family-names:
-    given-names:
+    family-names: Leandro Rodrigues Cordeiro
+    given-names: Fabio
 keywords:
-  -
-  -
-repository-code:
+  - Telemarketing
+  - Tecnologia
+  - Infra
+repository-code: https://github.com/ICEI-PUC-Minas-PMV-SI/pmv-si-2025-2-pe5-t1-g3-logam-tech
 license: CC-BY-4.0
 version: 1.0.0
-date-released: 2023-06-30
+date-released: 2024-12-09
